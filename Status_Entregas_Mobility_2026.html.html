@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Livoltek E-Mobility — Acompanhamento de Entregas 2026</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f9ff;min-height:100vh}
+button,select,input{font-family:inherit}
+::-webkit-scrollbar{height:6px;width:6px}
+::-webkit-scrollbar-track{background:#f1f5f9}
+::-webkit-scrollbar-thumb{background:#7dd3fc;border-radius:3px}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:11px}
+thead tr{background:#0c4a6e}
+th{padding:8px 9px;text-align:left;color:#7dd3fc;font-weight:600;font-size:10px;white-space:nowrap;user-select:none}
+th.s{cursor:pointer}
+th.s:hover{color:#bae6fd!important}
+th.active{color:#38bdf8!important}
+td{padding:6px 9px;border-bottom:1px solid #e0f2fe}
+.r-odd{background:#fff}
+.r-even{background:#f8fbff}
+.r-del{background:#f0fdf4!important}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:600;white-space:nowrap}
+.dot{width:5px;height:5px;border-radius:50%;display:inline-block;flex-shrink:0}
+.fbadge{padding:2px 6px;border-radius:8px;font-size:9px;font-weight:600;white-space:nowrap}
+.pill{padding:2px 7px;border-radius:5px;font-size:11px;font-weight:700}
+.kpi{background:#fff;border:1px solid #bae6fd;border-radius:7px;padding:8px 11px}
+.kpi-lbl{font-size:10px;color:#0369a1;margin-bottom:2px;font-weight:600}
+.kpi-val{font-size:20px;font-weight:700}
+.panel{background:#fff;border:1px solid #bae6fd;border-radius:8px;padding:9px 12px;margin-bottom:9px}
+.btn{padding:4px 12px;border-radius:14px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid;transition:all .15s}
+.btn-sm{padding:3px 9px;border-radius:11px;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid;transition:all .15s}
+.btn-wk{padding:4px 10px;border-radius:12px;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid}
+.lbl{font-size:10px;font-weight:700;color:#0369a1;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.row-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.footer-bar{padding:7px 12px;background:#f0f9ff;border-top:1px solid #bae6fd;font-size:10px;color:#0369a1;display:flex;justify-content:space-between}
+.legend{margin-top:9px;padding:7px 12px;background:#fff;border-radius:7px;border:1px solid #bae6fd;font-size:9px;color:#64748b;line-height:1.9}
+input[type=date]{padding:2px 4px;border-radius:4px;border:1px solid #bae6fd;font-size:10px;cursor:pointer;width:108px;color:#0369a1;background:#fff;font-family:inherit}
+input[type=date].has-date{border-color:#a7f3d0;background:#f0fdf4;color:#065f46}
+select.fsel{padding:3px 7px;border-radius:6px;border:1px solid #bae6fd;font-size:10px;color:#0369a1;background:#fff;cursor:pointer}
+input.fsearch{padding:3px 8px;border-radius:6px;border:1px solid #bae6fd;font-size:10px;color:#334155;flex:1;min-width:180px}
+.divider{width:1px;height:36px;background:#bae6fd;flex-shrink:0}
+.mono{font-family:monospace;font-size:10px}
+.vnd-chip{padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;cursor:pointer;border:1.5px solid;transition:all .15s;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useMemo,useEffect}=React;
+
+const TODAY=new Date("2026-03-17");
+TODAY.setHours(0,0,0,0);
+
+const FRETE={
+  CWB:{AC:15,AM:17,AP:18,PA:11,RO:13,RR:22,TO:10,AL:13,BA:11,CE:15,MA:15,PB:14,PE:14,PI:16,RN:15,SE:12,ES:9,MG:8,RJ:8,SP:5,PR:4,RS:5,SC:5,DF:12,GO:9,MS:10,MT:11},
+  FTZ:{AC:24,AM:14,AP:13,PA:8,RO:22,RR:19,TO:12,AL:7,BA:9,CE:4,MA:6,PB:5,PE:6,PI:5,RN:5,SE:8,ES:19,MG:17,RJ:17,SP:14,PR:17,RS:19,SC:18,DF:22,GO:19,MS:19,MT:20},
+  MAN:{AC:26,AM:4,AP:13,PA:8,RO:24,RR:5,TO:12,AL:17,BA:17,CE:14,MA:13,PB:0,PE:17,PI:14,RN:16,SE:17,ES:18,MG:17,RJ:17,SP:14,PR:17,RS:19,SC:18,DF:16,GO:13,MS:19,MT:20},
+};
+
+const BR_ST=["AC","AL","AM","AP","BA","CE","DF","ES","GO","MA","MG","MS","MT","PA","PB","PE","PI","PR","RJ","RN","RO","RR","RS","SC","SE","SP","TO"];
+
+function extractState(addr){
+  if(!addr)return null;
+  const u=addr.toUpperCase().replace(/\u2013/g,"-").replace(/\u2014/g,"-");
+  for(const st of BR_ST){
+    if([new RegExp(`[-,/ ]${st}[, /-]`),new RegExp(`[-,/ ]${st}$`),new RegExp(`, ${st},`),new RegExp(`- ${st}`),new RegExp(`/${st}[ ,]`),new RegExp(`\\t${st}\\t`),new RegExp(`\\b${st}\\b`)].some(p=>p.test(u)))return st;
+  }
+  return null;
+}
+
+function addDays(s,n){if(!s||n==null)return null;const d=new Date(s);d.setHours(0,0,0,0);d.setDate(d.getDate()+n);return d;}
+function fmt(d){if(!d)return"—";return(typeof d==="string"?new Date(d):d).toLocaleDateString("pt-BR");}
+function diff(d){if(!d)return null;const dt=typeof d==="string"?new Date(d):d;dt.setHours(0,0,0,0);return Math.floor((dt-TODAY)/86400000);}
+function mon(date){const d=new Date(date);d.setHours(0,0,0,0);d.setDate(d.getDate()-(d.getDay()===0?6:d.getDay()-1));return d;}
+function addD(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
+function fmtBRL(v){return v>0?new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",minimumFractionDigits:0,maximumFractionDigits:0}).format(v):"—";}
+
+const FU={
+  "LIVMFUN0701643":{nf:"842",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-05",dest:"PAPANDUVA - SC",uf:"SC",receive_pd:"2026-01-27"},
+  "LIVMMUN0701003":{nf:"843",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-06",dest:"IMBITUBA - SC",uf:"SC",receive_pd:"2026-01-27"},
+  "LIVMMUN0701843":{nf:"845",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-10",dest:"ITAPOÁ - SC",uf:"SC",receive_pd:"2026-01-27"},
+  "LIVMVIA0701393":null,
+  "LIVMGRE1301522":{nf:"903",inv_date:"2026-01-23",shipping:"2026-01-26",delivery:"2026-01-27",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-23"},
+  "LIVMGRE1301440":{nf:"902",inv_date:"2026-01-23",shipping:"2026-01-26",delivery:"2026-01-27",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-23"},
+  "LIVMADR1501888":null,
+  "LIVMJOR1501391":{nf:"853",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-26",dest:"BELO HORIZONTE - MG",uf:"MG",receive_pd:"2026-01-16"},
+  "LIVMENE1501105":{nf:"851",inv_date:"2026-01-16",shipping:"2026-01-16",delivery:"2026-01-16",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-01-15"},
+  "LIVMGAD1601998":null,
+  "LIVMINF2201172":{nf:"904",inv_date:"2026-01-26",shipping:"2026-03-04",delivery:"2026-03-09",dest:"VITÓRIA DA CONQUISTA - BA",uf:"BA",receive_pd:"2026-01-23"},
+  "LIVMTRO2701296":{nf:"948",inv_date:"2026-02-09",shipping:"2026-02-09",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-05"},
+  "LIVMTRO2701452":{nf:"913",inv_date:"2026-01-29",shipping:"2026-02-02",delivery:"2026-02-04",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-29"},
+  "LIVMTRO0302040":{nf:"925",inv_date:"2026-02-04",shipping:"2026-02-05",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-03"},
+  "LIVMENE2201840":{nf:"908",inv_date:"2026-01-27",shipping:"2026-01-27",delivery:"2026-01-27",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-01-27"},
+  "LIVMYEL2701851":{nf:"949",inv_date:"2026-02-09",shipping:"2026-02-10",delivery:"2026-02-23",dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-02-06"},
+  "LIVMYEL2701380":{nf:"963",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-23",dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-02-11"},
+  "LIVMVOR0202552":{nf:"961",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-18",dest:"SANTANA DE PARNAIBA - SP",uf:"SP",receive_pd:"2026-02-11"},
+  "LIVMDAN0302920":{nf:"943",inv_date:"2026-02-05",shipping:"2026-02-06",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-04"},
+  "LIVMZOO2901269":{nf:"920",inv_date:"2026-02-03",shipping:"2026-02-04",delivery:"2026-02-11",dest:"CASCAVEL - PR",uf:"PR",receive_pd:"2026-01-30"},
+  "LIVMDRS0402680":{nf:"944",inv_date:"2026-02-06",shipping:"2026-02-06",delivery:"2026-02-24",dest:"CAXIAS DO SUL - RS",uf:"RS",receive_pd:"2026-02-04"},
+  "LIVMMAR0902802":{nf:"959",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-27",dest:"SUMARÉ - SP",uf:"SP",receive_pd:"2026-02-10"},
+  "LIVMFAB0902727":{nf:"960",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-27",dest:"JUNDIAÍ - SP",uf:"SP",receive_pd:"2026-02-10"},
+  "LIVMCIA1002389":{nf:"962",inv_date:"2026-02-11",shipping:"2026-02-12",delivery:"2026-02-20",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-10"},
+  "LIVMMAR1202921":{nf:"970",inv_date:"2026-02-18",shipping:"2026-02-23",delivery:"2026-03-12",dest:"FLORIANÓPOLIS - SC",uf:"SC",receive_pd:"2026-02-18"},
+  "LIVMCIA2402358":null,
+  "LIVMPAT1902119":{nf:"984",inv_date:"2026-02-26",shipping:"2026-02-27",delivery:"2026-03-16",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-23"},
+  "LIVMMUN2002305":{nf:"988",inv_date:"2026-03-02",shipping:"2026-03-02",delivery:null,dest:"SANTA CATARINA - SC",uf:"SC",receive_pd:"2026-02-27"},
+  "LIVMDIM2002356":{nf:"1010",inv_date:"2026-02-27",shipping:"2026-03-14",delivery:"2026-03-16",dest:"JOAÇABA - SC",uf:"SC",receive_pd:"2026-02-27"},
+  "LIVMYEL2502787":{nf:"999",inv_date:"2026-03-02",shipping:"2026-03-04",delivery:"2026-03-05",dest:"APARECIDA DE GOIANIA - GO",uf:"GO",receive_pd:"2026-02-26"},
+  "LIVMREN2502006":{nf:"1002",inv_date:"2026-03-03",shipping:"2026-03-05",delivery:null,dest:"SÃO JOSÉ DOS PINHAIS - PR",uf:"PR",receive_pd:"2026-02-27"},
+  "LIVMENE2502011":{nf:"998",inv_date:"2026-03-02",shipping:"2026-03-02",delivery:"2026-03-02",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-02-25"},
+  "LIVMEUR0203002":null,
+  "LIVMDIM0203074":{nf:"1007",inv_date:"2026-03-05",shipping:"2026-03-06",delivery:null,dest:"FLORIANÓPOLIS - SC",uf:"SC",receive_pd:"2026-03-02"},
+  "LIVMMUL0203701":{nf:"1046",inv_date:"2026-03-16",shipping:null,delivery:null,dest:"SÃO LUIS - MA",uf:"MA",receive_pd:"2026-03-13"},
+  "LIVMPOW0203363":{nf:"1023",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:null,dest:"RIO DE JANEIRO - RJ",uf:"RJ",receive_pd:"2026-03-09"},
+  "LIVMENZ0403327":null,
+  "LIVMEMO0701137":{nf:"1018",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"SANTO ANDRÉ - SP",uf:"SP",receive_pd:"2026-03-09"},
+  "LIVMEMO0701138":{nf:"1019",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-03-09"},
+  "LIVMEMO0701139":{nf:"1020",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-14",dest:"LIMEIRA - SP",uf:"SP",receive_pd:"2026-03-09"},
+  "LIVMEMO0701140":{nf:"1021",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"CAÇAPAVA - SP",uf:"SP",receive_pd:"2026-03-09"},
+  "LIVMENE0701142":{nf:"1011",inv_date:"2026-03-09",shipping:"2026-03-10",delivery:null,dest:"CAMPO GRANDE - MS",uf:"MS",receive_pd:"2026-03-06"},
+  "LIVMJ7S0701143":{nf:"1047",inv_date:"2026-03-16",shipping:null,delivery:null,dest:"GOIANIA - GO",uf:"GO",receive_pd:"2026-03-13"},
+  "LIVMDIM0701144":{nf:null,inv_date:"2026-03-11",shipping:null,delivery:null,dest:"PORTO BELO - SC",uf:"SC",receive_pd:"2026-03-09"},
+  "LIVMYEL0701147":{nf:null,inv_date:null,shipping:null,delivery:null,dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-03-13"},
+  "LIVPBRA2601633":{nf:"914",inv_date:"2026-01-29",shipping:"2026-02-06",delivery:"2026-02-09",dest:"SÃO JOSÉ - SC",uf:"SC",receive_pd:"2026-01-28"},
+};
+
+// ── Somente pedidos MOBILITY ──────────────────────────────────────────────────
+const RAW_ALL=[
+  {pedido:"LIVMFUN0701643",cliente:"FUNDO MUNICIPAL SAUDE PAPANDUVA",vendedor:"ANNA JULIA",local_entrega:"PAPANDUVA (SC)",origem:"CWB",frete_tipo:"CIF",valor:4900,rec_sm:"2026-01-06"},
+  {pedido:"LIVMMUN0701003",cliente:"MUNICIPIO DE IMBITUBA",vendedor:"ANNA JULIA",local_entrega:"IMBITUBA (SC)",origem:"CWB",frete_tipo:"CIF",valor:9800,rec_sm:"2026-01-06"},
+  {pedido:"LIVMMUN0701843",cliente:"ITAPOA - CAMARA MUNICIPAL",vendedor:"ANNA JULIA",local_entrega:"ITAPOÁ (SC)",origem:"CWB",frete_tipo:"CIF",valor:4900,rec_sm:"2026-01-06"},
+
+  {pedido:"LIVMGRE1301522",cliente:"GREENV",vendedor:"ANNA JULIA",local_entrega:"",origem:"CWB",frete_tipo:"CIF",valor:162400,rec_sm:"2026-01-13"},
+  {pedido:"LIVMGRE1301440",cliente:"GREENV",vendedor:"ANNA JULIA",local_entrega:"",origem:"CWB",frete_tipo:"CIF",valor:135212,rec_sm:"2026-01-13"},
+  {pedido:"LIVMADR1501888",cliente:"Adriano Fedalto",vendedor:"ANNA JULIA",local_entrega:"Curitiba - PR",origem:"CWB",frete_tipo:"CIF",valor:2500,rec_sm:"2026-01-14"},
+  {pedido:"LIVMJOR1501391",cliente:"JORLAN-EV",vendedor:"ANNA JULIA",local_entrega:"BELO HORIZONTE - MG",origem:"CWB",frete_tipo:"CIF",valor:7500,rec_sm:"2026-01-15"},
+  {pedido:"LIVMENE1501105",cliente:"ENERGIA ATUAL",vendedor:"ANNA JULIA",local_entrega:"",origem:"CWB",frete_tipo:"FOB",valor:3100,rec_sm:"2026-01-15"},
+  {pedido:"LIVMGAD1601998",cliente:"G A DE BARROS LTDA",vendedor:"ANNA JULIA",local_entrega:"",origem:"CWB",frete_tipo:"",valor:0,rec_sm:"2026-01-16"},
+  {pedido:"LIVMINF2201172",cliente:"INFINITY VEICULOS",vendedor:"ANNA JULIA",local_entrega:"VITÓRIA DA CONQUISTA - BA",origem:"CWB",frete_tipo:"CIF",valor:50531,rec_sm:"2026-01-19"},
+  {pedido:"LIVMTRO2701296",cliente:"TROOVE COMERCIO E SERVICOS",vendedor:"ANNA JULIA",local_entrega:"São Paulo - SP",origem:"CWB",frete_tipo:"CIF",valor:66950,rec_sm:"2026-01-19"},
+  {pedido:"LIVMTRO2701452",cliente:"TROOVE COMERCIO E SERVICOS",vendedor:"ANNA JULIA",local_entrega:"São Paulo - SP",origem:"CWB",frete_tipo:"CIF",valor:65000,rec_sm:"2026-01-19"},
+  {pedido:"LIVMTRO0302040",cliente:"TROOVE COMERCIO E SERVICOS",vendedor:"ANNA JULIA",local_entrega:"São Paulo - SP",origem:"CWB",frete_tipo:"CIF",valor:66950,rec_sm:"2026-01-19"},
+  {pedido:"LIVMENE2201840",cliente:"ENERGIA ATUAL",vendedor:"ANNA JULIA",local_entrega:"",origem:"CWB",frete_tipo:"FOB",valor:2100,rec_sm:"2026-01-22"},
+  {pedido:"LIVPBRA2601633",cliente:"DIMAS GWM (SÃO JOSE)",vendedor:"ANNA JULIA",local_entrega:"São José - SC",origem:"CWB",frete_tipo:"CIF",valor:50531,rec_sm:"2026-01-24"},
+  {pedido:"LIVMYEL2701851",cliente:"YELLOT MOB LTDA",vendedor:"ANNA JULIA",local_entrega:"BRASÍLIA, DF",origem:"CWB",frete_tipo:"CIF",valor:61425,rec_sm:"2026-01-26"},
+  {pedido:"LIVMYEL2701380",cliente:"YELLOT MOB LTDA",vendedor:"ANNA JULIA",local_entrega:"BRASÍLIA, DF",origem:"CWB",frete_tipo:"CIF",valor:61425,rec_sm:"2026-01-26"},
+  {pedido:"LIVMVOR0202552",cliente:"VORTEX 3.6.9 LTDA",vendedor:"ANNA JULIA",local_entrega:"Santana de Parnaíba SP",origem:"CWB",frete_tipo:"CIF",valor:2500,rec_sm:"2026-02-02"},
+  {pedido:"LIVMDAN0302920",cliente:"Daniel Goulart",vendedor:"ANNA JULIA",local_entrega:"São Paulo, SP",origem:"CWB",frete_tipo:"CIF",valor:70000,rec_sm:"2026-02-02"},
+  {pedido:"LIVMZOO2901269",cliente:"ZOOM VEICULOS LTDA",vendedor:"ANNA JULIA",local_entrega:"Cascavel - PR",origem:"CWB",frete_tipo:"CIF",valor:2500,rec_sm:"2026-01-29"},
+  {pedido:"LIVMDRS0402680",cliente:"DRSUL DEALER VEICULOS LTDA",vendedor:"ANNA JULIA",local_entrega:"Caxias do Sul/RS",origem:"CWB",frete_tipo:"CIF",valor:8200,rec_sm:"2026-02-04"},
+  {pedido:"LIVMMAR0902802",cliente:"Marcos Roberto da Silva",vendedor:"ANNA JULIA",local_entrega:"Sumaré SP",origem:"CWB",frete_tipo:"CIF",valor:2575,rec_sm:"2026-02-06"},
+  {pedido:"LIVMFAB0902727",cliente:"FABIO COSTA VASCONCELLOS",vendedor:"ANNA JULIA",local_entrega:"Jundiaí-SP",origem:"CWB",frete_tipo:"CIF",valor:2575,rec_sm:"2026-02-06"},
+  {pedido:"LIVMCIA1002389",cliente:"CIA CHARGE",vendedor:"ANNA JULIA",local_entrega:"São Paulo - SP",origem:"CWB",frete_tipo:"CIF",valor:68000,rec_sm:"2026-02-09"},
+  {pedido:"LIVMMAR1202921",cliente:"MARKET EV",vendedor:"ANNA JULIA",local_entrega:"Florianópolis - SC",origem:"CWB",frete_tipo:"CIF",valor:3200,rec_sm:"2026-02-12"},
+  {pedido:"LIVMPAT1902119",cliente:"Patricia Dias dos Santos",vendedor:"BEATRIZ SALES",local_entrega:"Pinheiros São Paulo",origem:"CWB",frete_tipo:"CIF",valor:4200,rec_sm:"2026-02-12"},
+  {pedido:"LIVMMUN2002305",cliente:"MUNICIPIO DE CACADOR",vendedor:"ANNA JULIA",local_entrega:"CAÇADOR - SC",origem:"CWB",frete_tipo:"CIF",valor:4900,rec_sm:"2026-02-03"},
+  {pedido:"LIVMDIM2002356",cliente:"DIMAS GWM (SÃO JOSE)",vendedor:"ANNA JULIA",local_entrega:"Joaçaba - SC",origem:"CWB",frete_tipo:"CIF",valor:22515,rec_sm:"2026-02-19"},
+  {pedido:"LIVMCIA2402358",cliente:"CIA CHARGE",vendedor:"ANNA JULIA",local_entrega:"Cianorte - PR",origem:"FTZ",frete_tipo:"CIF",valor:672000,rec_sm:"2026-02-09"},
+  {pedido:"LIVMYEL2502787",cliente:"YELLOT MOB LTDA",vendedor:"ANNA JULIA",local_entrega:"APARECIDA DE GOIÂNIA-GO",origem:"CWB",frete_tipo:"CIF",valor:117000,rec_sm:"2026-02-24"},
+  {pedido:"LIVMREN2502006",cliente:"RENAULT DO BRASIL LTDA",vendedor:"BEATRIZ SALES",local_entrega:"Sao Jose dos Pinhais PR",origem:"CWB",frete_tipo:"CIF",valor:102325.35,rec_sm:"2026-02-23"},
+  {pedido:"LIVMENE2502011",cliente:"ENERGIA ATUAL",vendedor:"ANNA JULIA",local_entrega:"",origem:"CWB",frete_tipo:"FOB",valor:4200,rec_sm:"2026-02-23"},
+  {pedido:"LIVMEUR0203002",cliente:"EUROVIA AUTO LTDA",vendedor:"BEATRIZ SALES",local_entrega:"RECIFE - PE",origem:"CWB",frete_tipo:"CIF",valor:34000,rec_sm:"2026-02-26"},
+  {pedido:"LIVMDIM0203074",cliente:"DIMAS GWM COMERCIO AUTOMOVEIS",vendedor:"BEATRIZ SALES",local_entrega:"Florianópolis - SC",origem:"CWB",frete_tipo:"CIF",valor:22515,rec_sm:"2026-02-27"},
+  {pedido:"LIVMMUL0203701",cliente:"MULT CONSTRUCOES LTDA",vendedor:"KARINY MACIEL",local_entrega:"SÃO LUIS - MARANHÃO",origem:"CWB",frete_tipo:"CIF",valor:140000,rec_sm:"2026-02-27"},
+  {pedido:"LIVMPOW0203363",cliente:"POWERUP ENERGIA E PROJETOS",vendedor:"ANNA JULIA",local_entrega:"Rio de Janeiro - RJ",origem:"CWB",frete_tipo:"CIF",valor:800,rec_sm:"2026-03-02"},
+  {pedido:"LIVMENZ0403327",cliente:"ENZO SELECT MOTORS LTDA",vendedor:"BEATRIZ SALES",local_entrega:"",origem:"CWB",frete_tipo:"CIF",valor:0,rec_sm:"2026-03-03"},
+  {pedido:"LIVMEMO0701137",cliente:"EMOB SOLUCOES - SANTO ANDRÉ",vendedor:"ANNA JULIA",local_entrega:"Santo André - SP",origem:"CWB",frete_tipo:"CIF",valor:28500,rec_sm:"2026-03-05"},
+  {pedido:"LIVMEMO0701138",cliente:"EMOB SOLUCOES - RAPOSO TAVARES",vendedor:"ANNA JULIA",local_entrega:"São Paulo - SP",origem:"CWB",frete_tipo:"CIF",valor:28500,rec_sm:"2026-03-05"},
+  {pedido:"LIVMEMO0701139",cliente:"EMOB SOLUCOES - LIMEIRA",vendedor:"ANNA JULIA",local_entrega:"Limeira - SP",origem:"CWB",frete_tipo:"CIF",valor:28500,rec_sm:"2026-03-05"},
+  {pedido:"LIVMEMO0701140",cliente:"EMOB SOLUCOES - CAÇAPAVA",vendedor:"ANNA JULIA",local_entrega:"Caçapava - SP",origem:"CWB",frete_tipo:"CIF",valor:28500,rec_sm:"2026-03-05"},
+  {pedido:"LIVMENE0701142",cliente:"ENERGISA MATO GROSSO DO SUL",vendedor:"ANNA JULIA",local_entrega:"Campo Grande, MS",origem:"CWB",frete_tipo:"CIF",valor:0,rec_sm:"2026-03-05"},
+  {pedido:"LIVMJ7S0701143",cliente:"J7 SOLAR ENERGY LTDA",vendedor:"ANNA JULIA",local_entrega:"Goiânia - GO",origem:"CWB",frete_tipo:"CIF",valor:70000,rec_sm:"2026-03-05"},
+  {pedido:"LIVMDIM0701144",cliente:"DIMAS GWM PORTO BELO",vendedor:"BEATRIZ SALES",local_entrega:"Porto Belo - SC",origem:"CWB",frete_tipo:"CIF",valor:85281,rec_sm:"2026-03-06"},
+  {pedido:"LIVMYEL0701147",cliente:"YELLOT MOB LTDA",vendedor:"ANNA JULIA",local_entrega:"Planaltina, Brasília - DF",origem:"CWB",frete_tipo:"CIF",valor:58000,rec_sm:"2026-03-11"},
+];
+
+function processOrder(o){
+  const fu=FU[o.pedido.trim()]||null;
+  const receive_pd=fu?.receive_pd||null;
+  const nf=fu?.nf||null;
+  const rec_sm=o.rec_sm||null;
+  const dias_sm=(rec_sm&&receive_pd)?Math.round((new Date(receive_pd)-new Date(rec_sm))/86400000):null;
+  const has_nf=!!nf;
+  const dt_nf=fu?.inv_date||null;
+  const shipping=fu?.shipping||null;
+  const fu_delivery=fu?.delivery||null;
+  const local_raw=(fu?.dest&&fu.dest.trim())||o.local_entrega||"";
+  const fu_found=!!fu;
+  const isFOB=o.frete_tipo==="FOB";
+  const totvs_flag=!local_raw&&!fu_found;
+  const state=extractState(local_raw)||(fu?.uf&&fu.uf!==""?fu.uf:null);
+  const stateNotFound=!totvs_flag&&!isFOB&&!state;
+  let prazo=null;
+  if(!totvs_flag&&!isFOB&&state&&FRETE[o.origem])prazo=FRETE[o.origem][state]??null;
+  const base_date=shipping||dt_nf;
+  let previsao=null;
+  if(has_nf&&base_date&&prazo!=null)previsao=addDays(base_date,prazo);
+  const d=previsao?diff(previsao):null;
+  const fase=!has_nf?"sem_nf":!dt_nf?"sem_dt_nf":!shipping?"coletado_nao":"em_transito";
+  let status;
+  if(totvs_flag)      status="TOTVS";
+  else if(!has_nf)    status="SEM_NF";
+  else if(isFOB)      status="FOB";
+  else if(stateNotFound)status="SEM_ESTADO";
+  else if(!dt_nf)     status="SEM_DATA_NF";
+  else if(prazo==null)status="SEM_PRAZO";
+  else if(d<0)        status="ATRASADO";
+  else                status="NO_PRAZO";
+  return{...o,nf,has_nf,dt_nf,shipping,receive_pd,rec_sm,dias_sm,local_entrega:local_raw,totvs_flag,state,prazo,previsao,diff:d,status,fase,fu_delivery,fu_found};
+}
+
+const BASE=RAW_ALL.map(processOrder);
+
+const S_CFG={
+  ATRASADO:   {label:"Atrasado",       bg:"#fef2f2",color:"#991b1b",dot:"#dc2626"},
+  NO_PRAZO:   {label:"No prazo",       bg:"#f0fdf4",color:"#166534",dot:"#16a34a"},
+  SEM_NF:     {label:"Sem NF",         bg:"#fff7ed",color:"#9a3412",dot:"#ea580c"},
+  FOB:        {label:"FOB – retirada", bg:"#eff6ff",color:"#1e40af",dot:"#3b82f6"},
+  TOTVS:      {label:"Sem endereço",   bg:"#faf5ff",color:"#6b21a8",dot:"#9333ea"},
+  SEM_DATA_NF:{label:"Sem data NF",   bg:"#fefce8",color:"#713f12",dot:"#ca8a04"},
+  SEM_ESTADO: {label:"UF não mapeada",bg:"#f1f5f9",color:"#475569",dot:"#94a3b8"},
+  SEM_PRAZO:  {label:"Sem prazo",     bg:"#f1f5f9",color:"#475569",dot:"#94a3b8"},
+  ENTREGUE:   {label:"Entregue",       bg:"#ecfdf5",color:"#065f46",dot:"#059669"},
+};
+const F_CFG={
+  sem_nf:      {label:"Aguard. NF",   bg:"#fff7ed",color:"#9a3412"},
+  sem_dt_nf:   {label:"NF s/ data",   bg:"#fefce8",color:"#713f12"},
+  coletado_nao:{label:"Não coletado", bg:"#faf5ff",color:"#6b21a8"},
+  em_transito: {label:"Em trânsito",  bg:"#eff6ff",color:"#1e40af"},
+};
+
+// Cores por vendedor — paleta mobility
+const VND_C={
+  "ANNA JULIA":   "#0ea5e9",
+  "BEATRIZ SALES":"#8b5cf6",
+  "KARINY MACIEL":"#10b981",
+};
+
+const WEEKS=(()=>{const m=mon(TODAY);return[
+  {label:"Esta semana",   start:m,           end:addD(m,6)},
+  {label:"Próx. semana",  start:addD(m,7),   end:addD(m,13)},
+  {label:"Semana +2",     start:addD(m,14),  end:addD(m,20)},
+  {label:"Semana +3",     start:addD(m,21),  end:addD(m,27)},
+  {label:"Próx. 30 dias", start:TODAY,       end:addD(TODAY,30)},
+  {label:"Atrasados",     overdue:true},
+];})();
+
+// Sem coluna Diretoria
+const COLS=[
+  {label:"Embarque",     col:"origem"},
+  {label:"Pedido",       col:"pedido"},
+  {label:"Cliente",      col:null},
+  {label:"Vendedor",     col:"vendedor"},
+  {label:"NF",           col:null},
+  {label:"Data NF",      col:"dt_nf"},
+  {label:"Shipping",     col:"shipping"},
+  {label:"Fase",         col:null},
+  {label:"UF",           col:null},
+  {label:"Prazo",        col:null},
+  {label:"Prev.Entrega", col:"previsao"},
+  {label:"Dias rest.",   col:"diff"},
+  {label:"Status",       col:"status"},
+  {label:"Data Entrega", col:null},
+];
+
+function App(){
+  const[vndF,setVndF]=useState("TODOS");
+  const[stF,setStF]=useState("TODOS");
+  const[wkF,setWkF]=useState(null);
+  const[sit,setSit]=useState("PENDENTES");
+  const[q,setQ]=useState("");
+  const[sc,setSc]=useState("origem");
+  const[asc,setAsc]=useState(true);
+  const[del,setDel]=useState({});
+
+  useEffect(()=>{
+    try{const r=localStorage.getItem("liv_mob_del_2026");if(r)setDel(JSON.parse(r));}catch{}
+  },[]);
+
+  const setDate=(ped,date)=>{
+    setDel(prev=>{
+      const u=date?{...prev,[ped]:date}:(()=>{const n={...prev};delete n[ped];return n;})();
+      try{localStorage.setItem("liv_mob_del_2026",JSON.stringify(u));}catch{}
+      return u;
+    });
+  };
+
+  const orders=useMemo(()=>BASE.map(o=>{
+    const k=o.pedido.trim();
+    const dataE=del[k]||o.fu_delivery||null;
+    const ent=!!dataE;
+    return{...o,entregue:ent,dataEntregue:dataE,status:ent?"ENTREGUE":o.status};
+  }),[del]);
+
+  // Lista de vendedores únicos
+  const vendedores=useMemo(()=>["TODOS",...[...new Set(orders.map(o=>o.vendedor))].sort()],[orders]);
+
+  // KPIs por vendedor selecionado
+  const kpis=useMemo(()=>{
+    const b=vndF==="TODOS"?orders:orders.filter(o=>o.vendedor===vndF);
+    const total_valor=b.reduce((s,o)=>s+(o.valor||0),0);
+    return{
+      total:b.length,
+      atrasado:b.filter(o=>o.status==="ATRASADO").length,
+      noPrazo:b.filter(o=>o.status==="NO_PRAZO").length,
+      entregue:b.filter(o=>o.entregue).length,
+      transito:b.filter(o=>!o.entregue&&o.fase==="em_transito").length,
+      semNf:b.filter(o=>o.status==="SEM_NF").length,
+      total_valor,
+    };
+  },[orders,vndF]);
+
+  const stOpts=["TODOS","ATRASADO","NO_PRAZO","SEM_NF","FOB","TOTVS","SEM_DATA_NF","SEM_ESTADO","ENTREGUE"];
+
+  const hs=col=>{if(sc===col)setAsc(a=>!a);else{setSc(col);setAsc(true);}};
+  const Ico=({col})=>sc===col?<span style={{marginLeft:2,fontSize:9}}>{asc?"▲":"▼"}</span>:<span style={{marginLeft:2,fontSize:9,opacity:.2}}>⇅</span>;
+
+  const sorted=useMemo(()=>{
+    const list=orders.filter(o=>{
+      if(sit==="PENDENTES"&&o.entregue)return false;
+      if(sit==="CONCLUIDOS"&&!o.entregue)return false;
+      if(vndF!=="TODOS"&&o.vendedor!==vndF)return false;
+      if(stF!=="TODOS"&&o.status!==stF)return false;
+      if(q){const lq=q.toLowerCase();if(!o.pedido.toLowerCase().includes(lq)&&!o.cliente.toLowerCase().includes(lq)&&!(o.nf||"").toLowerCase().includes(lq))return false;}
+      if(wkF!=null){
+        const wk=WEEKS[wkF];
+        if(wk.overdue){if(o.status!=="ATRASADO")return false;}
+        else if(wk.start&&wk.end){if(!o.previsao)return false;const pv=new Date(o.previsao);pv.setHours(0,0,0,0);if(pv<wk.start||pv>wk.end)return false;}
+      }
+      return true;
+    });
+    return[...list].sort((a,b)=>{
+      if(["previsao","diff","dt_nf","shipping","receive_pd","dias_sm"].includes(sc)){
+        const g=o=>sc==="previsao"?(o.previsao?new Date(o.previsao).getTime():Infinity):sc==="diff"?(o.diff??Infinity):sc==="dt_nf"?(o.dt_nf?new Date(o.dt_nf).getTime():Infinity):sc==="receive_pd"?(o.receive_pd?new Date(o.receive_pd).getTime():Infinity):sc==="dias_sm"?(o.dias_sm??Infinity):(o.shipping?new Date(o.shipping).getTime():Infinity);
+        return asc?g(a)-g(b):g(b)-g(a);
+      }
+      const va=String(a[sc]||""),vb=String(b[sc]||"");
+      return asc?va.localeCompare(vb):vb.localeCompare(va);
+    });
+  },[orders,sit,vndF,stF,q,wkF,sc,asc]);
+
+  return(
+    <div style={{fontFamily:"'Segoe UI',system-ui,sans-serif",background:"#f0f9ff",minHeight:"100vh"}}>
+      {/* Header */}
+      <div style={{background:"#0c4a6e",padding:"12px 20px",display:"flex",alignItems:"center",gap:10}}>
+        <div style={{width:5,height:28,background:"#38bdf8",borderRadius:3}}/>
+        <div style={{flex:1}}>
+          <div style={{color:"#fff",fontWeight:700,fontSize:15,display:"flex",alignItems:"center",gap:8}}>
+            <span style={{fontSize:18}}>⚡</span>
+            Livoltek E-Mobility — Acompanhamento de Entregas 2026
+          </div>
+          <div style={{color:"#7dd3fc",fontSize:10,marginTop:1}}>Hoje: {fmt(TODAY)} · Dados: Follow-up PO TOTVS · Previsão = Shipping (ou Data NF) + prazo frete</div>
+        </div>
+      </div>
+
+      <div style={{padding:"12px 20px"}}>
+        {/* KPIs */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:7,marginBottom:12}}>
+          {[
+            {l:"Total pedidos",v:kpis.total,c:"#0c4a6e"},
+            {l:"🔴 Atrasados",v:kpis.atrasado,c:"#dc2626"},
+            {l:"🟠 Sem NF",v:kpis.semNf,c:"#ea580c"},
+            {l:"🚚 Em trânsito",v:kpis.transito,c:"#0369a1"},
+            {l:"✅ Entregues",v:kpis.entregue,c:"#059669"},
+            {l:"🟢 No prazo",v:kpis.noPrazo,c:"#16a34a"},
+          ].map((k,i)=>(
+            <div key={i} className="kpi">
+              <div className="kpi-lbl">{k.l}</div>
+              <div className="kpi-val" style={{color:k.c}}>{k.v}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Filtros principais */}
+        <div className="panel">
+          <div style={{display:"flex",gap:16,flexWrap:"wrap",alignItems:"flex-start"}}>
+            {/* Situação */}
+            <div>
+              <div className="lbl">Situação</div>
+              <div style={{display:"flex",gap:5}}>
+                {[{k:"PENDENTES",l:"⏳ Pendentes",c:"#b45309"},{k:"CONCLUIDOS",l:"✅ Concluídos",c:"#065f46"},{k:"TODOS",l:"Todos",c:"#0c4a6e"}].map(({k,l,c})=>(
+                  <button key={k} className="btn" onClick={()=>setSit(k)} style={{borderColor:sit===k?c:"#bae6fd",background:sit===k?c:"#fff",color:sit===k?"#fff":"#0369a1"}}>{l}</button>
+                ))}
+              </div>
+            </div>
+            <div className="divider"/>
+            {/* Período */}
+            <div>
+              <div className="lbl">📅 Período de entrega</div>
+              <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+                <button className="btn-wk" onClick={()=>setWkF(null)} style={{borderColor:wkF===null?"#0c4a6e":"#bae6fd",background:wkF===null?"#0c4a6e":"#fff",color:wkF===null?"#fff":"#0369a1"}}>Todos</button>
+                {WEEKS.map((w,i)=>(
+                  <button key={i} className="btn-wk" onClick={()=>setWkF(wkF===i?null:i)} style={{borderColor:wkF===i?(w.overdue?"#dc2626":"#0284c7"):"#bae6fd",background:wkF===i?(w.overdue?"#dc2626":"#0284c7"):"#fff",color:wkF===i?"#fff":"#0369a1"}}>{w.label}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Filtros secundários — Vendedor + Status + Busca */}
+        <div className="row-filters">
+          {/* Filtro Vendedor */}
+          <div style={{display:"flex",gap:5,flexWrap:"wrap",alignItems:"center"}}>
+            <span style={{fontSize:10,fontWeight:700,color:"#0369a1",textTransform:"uppercase",letterSpacing:".05em",whiteSpace:"nowrap"}}>👤 Vendedor:</span>
+            {vendedores.map(v=>{
+              const cor=v==="TODOS"?"#0c4a6e":(VND_C[v]||"#64748b");
+              const ativo=vndF===v;
+              return(
+                <button key={v} className="vnd-chip" onClick={()=>setVndF(v)}
+                  style={{borderColor:ativo?cor:"#bae6fd",background:ativo?cor:"#fff",color:ativo?"#fff":cor}}>
+                  {v==="TODOS"?"Todos":v}
+                </button>
+              );
+            })}
+          </div>
+          <div style={{width:1,height:28,background:"#bae6fd",flexShrink:0,margin:"0 2px"}}/>
+          <select className="fsel" value={stF} onChange={e=>setStF(e.target.value)}>
+            {stOpts.map(s=><option key={s} value={s}>{s==="TODOS"?"Todos os status":S_CFG[s]?.label||s}</option>)}
+          </select>
+          <input className="fsearch" value={q} onChange={e=>setQ(e.target.value)} placeholder="Buscar pedido, NF ou cliente..."/>
+        </div>
+
+        {/* Tabela */}
+        <div style={{background:"#fff",border:"1px solid #bae6fd",borderRadius:9,overflow:"hidden"}}>
+          <div className="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  {COLS.map(({label,col})=>(
+                    <th key={label} className={col?"s"+(sc===col?" active":""):""} onClick={col?()=>hs(col):undefined}>
+                      {label}{col&&<Ico col={col}/>}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.map((o,i)=>{
+                  const k=o.pedido.trim();
+                  const cfg=S_CFG[o.status]||S_CFG.SEM_PRAZO;
+                  const fc=F_CFG[o.fase]||{};
+                  const dc=o.diff==null?"#94a3b8":o.diff<0?"#dc2626":o.diff<=3?"#d97706":"#16a34a";
+                  const rc=o.entregue?"r-del":i%2===0?"r-odd":"r-even";
+                  const vndCor=VND_C[o.vendedor]||"#64748b";
+                  return(
+                    <tr key={k+i} className={rc}>
+                      {/* Embarque */}
+                      <td><span className="pill" style={{background:o.origem==="CWB"?"#dbeafe":o.origem==="MAN"?"#d1fae5":"#fef3c7",color:o.origem==="CWB"?"#1d4ed8":o.origem==="MAN"?"#065f46":"#92400e"}}>{o.origem}</span></td>
+                      {/* Pedido */}
+                      <td className="mono" style={{fontWeight:600,color:"#0c4a6e",whiteSpace:"nowrap"}}>{k}</td>
+                      {/* Cliente */}
+                      <td style={{color:"#334155",maxWidth:140,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}} title={o.cliente}>{o.cliente}</td>
+                      {/* Vendedor — com cor */}
+                      <td>
+                        <span style={{padding:"2px 7px",borderRadius:8,fontSize:10,fontWeight:700,background:vndCor+"18",color:vndCor,whiteSpace:"nowrap"}}>
+                          {o.vendedor}
+                        </span>
+                      </td>
+                      {/* NF */}
+                      <td style={{fontWeight:o.has_nf?600:400,color:o.has_nf?"#15803d":"#dc2626",whiteSpace:"nowrap"}}>
+                        {o.nf||"—"}
+                        {o.fu_found&&<span title="fonte: follow-up" style={{marginLeft:2,fontSize:9,color:"#0ea5e9"}}>↗</span>}
+                      </td>
+                      {/* Data NF */}
+                      <td style={{color:"#64748b",whiteSpace:"nowrap",fontSize:10}}>{fmt(o.dt_nf)}</td>
+                      {/* Shipping */}
+                      <td style={{whiteSpace:"nowrap",fontSize:10,color:o.shipping?"#0369a1":"#94a3b8",fontWeight:o.shipping?600:400}}>
+                        {o.shipping?fmt(o.shipping):<span style={{fontSize:9}}>Não coletado</span>}
+                      </td>
+                      {/* Fase */}
+                      <td>{!o.entregue&&fc.label&&<span className="fbadge" style={{background:fc.bg,color:fc.color}}>{fc.label}</span>}</td>
+                      {/* UF */}
+                      <td style={{textAlign:"center",fontWeight:600,fontSize:11,color:"#334155"}}>
+                        {o.status==="SEM_ESTADO"?<span style={{color:"#f59e0b",fontSize:9}}>⚠N/I</span>:(o.state||"—")}
+                      </td>
+                      {/* Prazo */}
+                      <td style={{textAlign:"center",color:"#334155",fontSize:10}}>{o.prazo!=null?`${o.prazo}d`:"—"}</td>
+                      {/* Previsão */}
+                      <td style={{whiteSpace:"nowrap",fontWeight:600,fontSize:10,color:o.previsao?(diff(o.previsao)<0?"#dc2626":diff(o.previsao)<=3?"#d97706":"#15803d"):"#94a3b8"}}>{fmt(o.previsao)}</td>
+                      {/* Dias */}
+                      <td style={{textAlign:"center"}}>
+                        {o.entregue
+                          ?(() => {
+                              if(!o.dataEntregue||!o.previsao) return <span style={{color:"#059669",fontSize:11}}>✓</span>;
+                              const dp=Math.round((new Date(o.dataEntregue)-new Date(o.previsao))/86400000);
+                              return dp<=0
+                                ?<span style={{fontWeight:700,fontSize:10,padding:"1px 5px",borderRadius:5,background:"#f0fdf4",color:"#166534"}}>✓ {dp===0?"no prazo":`${Math.abs(dp)}d antes`}</span>
+                                :<span style={{fontWeight:700,fontSize:10,padding:"1px 5px",borderRadius:5,background:"#fef2f2",color:"#991b1b"}}>+{dp}d atraso</span>;
+                            })()
+                          :o.diff!=null
+                            ?<span style={{fontWeight:700,fontSize:11,color:dc}}>{o.diff<0?`${o.diff}d`:`+${o.diff}d`}</span>
+                            :"—"}
+                      </td>
+                      {/* Status */}
+                      <td><span className="badge" style={{background:cfg.bg,color:cfg.color}}><span className="dot" style={{background:cfg.dot}}/>{cfg.label}</span></td>
+                      {/* Data Entrega */}
+                      <td>
+                        <input type="date" value={o.dataEntregue||""} min="2026-01-01" max="2026-12-31"
+                          className={o.dataEntregue?"has-date":""}
+                          onChange={e=>setDate(k,e.target.value||null)}/>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {!sorted.length&&<tr><td colSpan={14} style={{padding:28,textAlign:"center",color:"#94a3b8"}}>Nenhum pedido encontrado</td></tr>}
+              </tbody>
+            </table>
+          </div>
+          <div className="footer-bar">
+            <span>{sorted.length} pedido(s) exibido(s) · <span style={{color:"#0ea5e9"}}>↗</span> = dado do Follow-up (PO TOTVS)</span>
+            <span>datas de entrega salvas no navegador</span>
+          </div>
+        </div>
+
+        {/* Legenda */}
+        <div className="legend">
+          <b>Lógica de prazo:</b> Shipping coletado → prazo conta a partir da coleta · Sem shipping → conta a partir da Data NF &nbsp;|&nbsp;
+          <b>Status:</b>{" "}
+          {Object.entries(S_CFG).map(([k,v])=>(
+            <span key={k} style={{marginRight:8}}><span style={{display:"inline-block",width:6,height:6,borderRadius:"50%",background:v.dot,marginRight:2,verticalAlign:"middle"}}/>{v.label}</span>
+          ))}&nbsp;|&nbsp;
+          <b>⚠ N/I</b> = UF não identificada automaticamente &nbsp;|&nbsp;
+          <b>Vendedores:</b>{" "}
+          {Object.entries(VND_C).map(([v,c])=>(
+            <span key={v} style={{marginRight:8}}><span style={{display:"inline-block",width:8,height:8,borderRadius:2,background:c,marginRight:3,verticalAlign:"middle"}}/>{v}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
