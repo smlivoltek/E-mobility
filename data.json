@@ -7,7 +7,8 @@
       "delivery": "2026-02-05",
       "dest": "PAPANDUVA - SC",
       "uf": "SC",
-      "receive_pd": "2026-01-27"
+      "receive_pd": "2026-01-27",
+      "obs": null
     },
     "LIVMMUN0701003": {
       "nf": "843",
@@ -16,7 +17,8 @@
       "delivery": "2026-02-06",
       "dest": "IMBITUBA - SC",
       "uf": "SC",
-      "receive_pd": "2026-01-27"
+      "receive_pd": "2026-01-27",
+      "obs": null
     },
     "LIVMMUN0701843": {
       "nf": "845",
@@ -25,7 +27,8 @@
       "delivery": "2026-02-10",
       "dest": "ITAPOÁ - SC",
       "uf": "SC",
-      "receive_pd": "2026-01-27"
+      "receive_pd": "2026-01-27",
+      "obs": null
     },
     "LIVMGRE1301522": {
       "nf": "903",
@@ -34,7 +37,8 @@
       "delivery": "2026-01-27",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-01-23"
+      "receive_pd": "2026-01-23",
+      "obs": null
     },
     "LIVMGRE1301440": {
       "nf": "902",
@@ -43,7 +47,8 @@
       "delivery": "2026-01-27",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-01-23"
+      "receive_pd": "2026-01-23",
+      "obs": null
     },
     "LIVMADR1501888": null,
     "LIVMJOR1501391": {
@@ -53,7 +58,8 @@
       "delivery": "2026-01-26",
       "dest": "BELO HORIZONTE – MG",
       "uf": "MG",
-      "receive_pd": "2026-01-16"
+      "receive_pd": "2026-01-16",
+      "obs": null
     },
     "LIVMENE1501105": {
       "nf": "851",
@@ -62,7 +68,8 @@
       "delivery": "2026-01-16",
       "dest": "CURITIBA - PR",
       "uf": "PR",
-      "receive_pd": "2026-01-15"
+      "receive_pd": "2026-01-15",
+      "obs": null
     },
     "LIVMGAD1601998": null,
     "LIVMINF2201172": {
@@ -72,7 +79,8 @@
       "delivery": "2026-03-09",
       "dest": "VITÓRIA DA CONQUISTA - BA",
       "uf": "BA",
-      "receive_pd": "2026-01-23"
+      "receive_pd": "2026-01-23",
+      "obs": null
     },
     "LIVMTRO2701296": {
       "nf": "948",
@@ -81,7 +89,8 @@
       "delivery": "2026-02-10",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-02-05"
+      "receive_pd": "2026-02-05",
+      "obs": null
     },
     "LIVMTRO2701452": {
       "nf": "913",
@@ -90,7 +99,8 @@
       "delivery": "2026-02-04",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-01-29"
+      "receive_pd": "2026-01-29",
+      "obs": null
     },
     "LIVMTRO0302040": {
       "nf": "925",
@@ -99,7 +109,8 @@
       "delivery": "2026-02-10",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-02-03"
+      "receive_pd": "2026-02-03",
+      "obs": null
     },
     "LIVMENE2201840": {
       "nf": "908",
@@ -108,7 +119,8 @@
       "delivery": "2026-01-27",
       "dest": "CURITIBA - PR",
       "uf": "PR",
-      "receive_pd": "2026-01-27"
+      "receive_pd": "2026-01-27",
+      "obs": null
     },
     "LIVPBRA2601633": {
       "nf": "914",
@@ -117,7 +129,8 @@
       "delivery": "2026-02-09",
       "dest": "SÃO JOSÉ - SC",
       "uf": "SC",
-      "receive_pd": "2026-01-28"
+      "receive_pd": "2026-01-28",
+      "obs": null
     },
     "LIVMYEL2701851": {
       "nf": "949",
@@ -126,7 +139,8 @@
       "delivery": "2026-02-23",
       "dest": "BRASÍLIA - DF",
       "uf": "DF",
-      "receive_pd": "2026-02-06"
+      "receive_pd": "2026-02-06",
+      "obs": null
     },
     "LIVMYEL2701380": {
       "nf": "963",
@@ -135,7 +149,8 @@
       "delivery": "2026-02-23",
       "dest": "BRASÍLIA - DF",
       "uf": "DF",
-      "receive_pd": "2026-02-11"
+      "receive_pd": "2026-02-11",
+      "obs": null
     },
     "LIVMVOR0202552": {
       "nf": "961",
@@ -144,7 +159,8 @@
       "delivery": "2026-02-18",
       "dest": "SANTANA DE PARNAIBA - SP",
       "uf": "SP",
-      "receive_pd": "2026-02-11"
+      "receive_pd": "2026-02-11",
+      "obs": null
     },
     "LIVMDAN0302920": {
       "nf": "943",
@@ -153,7 +169,8 @@
       "delivery": "2026-02-10",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-02-04"
+      "receive_pd": "2026-02-04",
+      "obs": null
     },
     "LIVMZOO2901269": {
       "nf": "920",
@@ -162,7 +179,8 @@
       "delivery": "2026-02-11",
       "dest": "CASCAVEL - PR",
       "uf": "PR",
-      "receive_pd": "2026-01-30"
+      "receive_pd": "2026-01-30",
+      "obs": null
     },
     "LIVMDRS0402680": {
       "nf": "944",
@@ -171,7 +189,8 @@
       "delivery": "2026-02-24",
       "dest": "CAXIAS DO SUL - RS",
       "uf": "RS",
-      "receive_pd": "2026-02-04"
+      "receive_pd": "2026-02-04",
+      "obs": null
     },
     "LIVMMAR0902802": {
       "nf": "959",
@@ -180,7 +199,8 @@
       "delivery": "2026-02-27",
       "dest": "SUMARÉ - SP",
       "uf": "SP",
-      "receive_pd": "2026-02-10"
+      "receive_pd": "2026-02-10",
+      "obs": null
     },
     "LIVMFAB0902727": {
       "nf": "960",
@@ -189,7 +209,8 @@
       "delivery": "2026-02-27",
       "dest": "JUNDIAÍ - SP",
       "uf": "SP",
-      "receive_pd": "2026-02-10"
+      "receive_pd": "2026-02-10",
+      "obs": null
     },
     "LIVMCIA1002389": {
       "nf": "962",
@@ -198,7 +219,8 @@
       "delivery": "2026-02-20",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-02-10"
+      "receive_pd": "2026-02-10",
+      "obs": null
     },
     "LIVMMAR1202921": {
       "nf": "970",
@@ -207,7 +229,8 @@
       "delivery": "2026-03-12",
       "dest": "FLORIANÓPOLIS - SC",
       "uf": "SC",
-      "receive_pd": "2026-02-18"
+      "receive_pd": "2026-02-18",
+      "obs": null
     },
     "LIVMPAT1902119": {
       "nf": "984",
@@ -216,7 +239,8 @@
       "delivery": "2026-03-16",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-02-23"
+      "receive_pd": "2026-02-23",
+      "obs": null
     },
     "LIVMMUN2002305": {
       "nf": "988",
@@ -225,7 +249,8 @@
       "delivery": "2026-03-16",
       "dest": "SANTA CATARINA - SC",
       "uf": "SC",
-      "receive_pd": "2026-02-27"
+      "receive_pd": "2026-02-27",
+      "obs": null
     },
     "LIVMDIM2002356": {
       "nf": "1010",
@@ -234,7 +259,8 @@
       "delivery": "2026-03-16",
       "dest": "JOAÇABA - SC",
       "uf": "SC",
-      "receive_pd": "2026-02-27"
+      "receive_pd": "2026-02-27",
+      "obs": null
     },
     "LIVMCIA2402358": null,
     "LIVMYEL2502787": {
@@ -244,16 +270,18 @@
       "delivery": "2026-03-05",
       "dest": "APARECIDA DE GOIANIA - GO",
       "uf": "GO",
-      "receive_pd": "2026-02-26"
+      "receive_pd": "2026-02-26",
+      "obs": null
     },
     "LIVMREN2502006": {
       "nf": "1002",
       "inv_date": "2026-03-03",
       "shipping": "2026-03-05",
-      "delivery": NaN,
+      "delivery": null,
       "dest": "SÃO JOSÉ DOS PINHAIS - PR",
       "uf": "PR",
-      "receive_pd": "2026-02-27"
+      "receive_pd": "2026-02-27",
+      "obs": null
     },
     "LIVMENE2502011": {
       "nf": "998",
@@ -262,35 +290,39 @@
       "delivery": "2026-03-02",
       "dest": "CURITIBA - PR",
       "uf": "PR",
-      "receive_pd": "2026-02-25"
+      "receive_pd": "2026-02-25",
+      "obs": null
     },
     "LIVMEUR0203002": null,
     "LIVMDIM0203074": {
       "nf": "1007",
       "inv_date": "2026-03-05",
       "shipping": "2026-03-06",
-      "delivery": NaN,
+      "delivery": null,
       "dest": "FLORIANÓPOLIS - SC",
       "uf": "SC",
-      "receive_pd": "2026-03-02"
+      "receive_pd": "2026-03-02",
+      "obs": null
     },
     "LIVMMUL0203701": {
       "nf": "1046",
       "inv_date": "2026-03-16",
-      "shipping": NaN,
-      "delivery": NaN,
+      "shipping": null,
+      "delivery": null,
       "dest": "SÃO LUIS - MA",
       "uf": "MA",
-      "receive_pd": "2026-03-13"
+      "receive_pd": "2026-03-13",
+      "obs": null
     },
     "LIVMPOW0203363": {
       "nf": "1023",
       "inv_date": "2026-03-11",
       "shipping": "2026-03-12",
-      "delivery": NaN,
+      "delivery": null,
       "dest": "RIO DE JANEIRO - RJ",
       "uf": "RJ",
-      "receive_pd": "2026-03-09"
+      "receive_pd": "2026-03-09",
+      "obs": null
     },
     "LIVMENZ0403327": null,
     "LIVMEMO0701137": {
@@ -300,7 +332,8 @@
       "delivery": "2026-03-13",
       "dest": "SANTO ANDRÉ - SP",
       "uf": "SP",
-      "receive_pd": "2026-03-09"
+      "receive_pd": "2026-03-09",
+      "obs": null
     },
     "LIVMEMO0701138": {
       "nf": "1019",
@@ -309,7 +342,8 @@
       "delivery": "2026-03-13",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-03-09"
+      "receive_pd": "2026-03-09",
+      "obs": null
     },
     "LIVMEMO0701139": {
       "nf": "1020",
@@ -318,7 +352,8 @@
       "delivery": "2026-03-14",
       "dest": "LIMEIRA - SP",
       "uf": "SP",
-      "receive_pd": "2026-03-09"
+      "receive_pd": "2026-03-09",
+      "obs": null
     },
     "LIVMEMO0701140": {
       "nf": "1021",
@@ -327,16 +362,18 @@
       "delivery": "2026-03-13",
       "dest": "CAÇAPAVA - SP",
       "uf": "SP",
-      "receive_pd": "2026-03-09"
+      "receive_pd": "2026-03-09",
+      "obs": null
     },
     "LIVMENE0701142": {
       "nf": "1011",
       "inv_date": "2026-03-09",
       "shipping": "2026-03-10",
-      "delivery": NaN,
+      "delivery": null,
       "dest": "CAMPO GRANDE - MS",
       "uf": "MS",
-      "receive_pd": "2026-03-06"
+      "receive_pd": "2026-03-06",
+      "obs": null
     },
     "LIVMJ7S0701143": {
       "nf": "1047",
@@ -345,25 +382,28 @@
       "delivery": "2026-04-02",
       "dest": "GOIANIA - GO",
       "uf": "GO",
-      "receive_pd": "2026-03-13"
+      "receive_pd": "2026-03-13",
+      "obs": null
     },
     "LIVMDIM0701144": {
       "nf": "1022",
       "inv_date": "2026-03-11",
-      "shipping": NaN,
-      "delivery": NaN,
+      "shipping": null,
+      "delivery": null,
       "dest": "PORTO BELO - SC",
       "uf": "SC",
-      "receive_pd": "2026-03-09"
+      "receive_pd": "2026-03-09",
+      "obs": null
     },
     "LIVMYEL0701147": {
-      "nf": NaN,
-      "inv_date": NaN,
-      "shipping": NaN,
-      "delivery": NaN,
+      "nf": null,
+      "inv_date": null,
+      "shipping": null,
+      "delivery": null,
       "dest": "BRASÍLIA - DF",
       "uf": "DF",
-      "receive_pd": "2026-03-13"
+      "receive_pd": "2026-03-13",
+      "obs": null
     },
     "LIVMSEI1025016": {
       "nf": "730",
@@ -372,7 +412,8 @@
       "delivery": "2026-01-28",
       "dest": "MOGI DAS CRUZES - SP",
       "uf": "SP",
-      "receive_pd": "2026-01-23"
+      "receive_pd": "2026-01-23",
+      "obs": null
     },
     "LIVMGW-0112967": {
       "nf": "762",
@@ -381,7 +422,8 @@
       "delivery": "2026-01-23",
       "dest": "SÃO JOSÉ DO RIO PRETO - SP",
       "uf": "SP",
-      "receive_pd": "2026-01-14"
+      "receive_pd": "2026-01-14",
+      "obs": null
     },
     "LIVMMUN1612133": {
       "nf": "7576",
@@ -390,7 +432,8 @@
       "delivery": "2026-01-29",
       "dest": "Rodeio - SC",
       "uf": "SC",
-      "receive_pd": "2026-01-08"
+      "receive_pd": "2026-01-08",
+      "obs": null
     },
     "LIVMPOW0601511": {
       "nf": "841",
@@ -399,7 +442,8 @@
       "delivery": "2026-01-20",
       "dest": "PINHAIS - PR",
       "uf": "PR",
-      "receive_pd": "2026-01-06"
+      "receive_pd": "2026-01-06",
+      "obs": null
     },
     "LIVMMUN0701622": {
       "nf": "844",
@@ -408,7 +452,8 @@
       "delivery": "2026-02-05",
       "dest": "ITAPOÁ - SC",
       "uf": "SC",
-      "receive_pd": "2026-01-27"
+      "receive_pd": "2026-01-27",
+      "obs": null
     },
     "LIVMZUU1612305": {
       "nf": "849",
@@ -417,7 +462,8 @@
       "delivery": "2026-01-23",
       "dest": "SÃO BERNARDO DO CAMPO - SP",
       "uf": "SP",
-      "receive_pd": "2026-01-14"
+      "receive_pd": "2026-01-14",
+      "obs": null
     },
     "LIVMSPT1301499": {
       "nf": "7733",
@@ -426,7 +472,8 @@
       "delivery": "2026-01-21",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-01-16"
+      "receive_pd": "2026-01-16",
+      "obs": null
     },
     "LIVMSPT1301926": {
       "nf": "7734",
@@ -435,7 +482,8 @@
       "delivery": "2026-01-21",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-01-16"
+      "receive_pd": "2026-01-16",
+      "obs": null
     },
     "LIVMSPT1301832": {
       "nf": "7735",
@@ -444,7 +492,8 @@
       "delivery": "2026-01-21",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-01-16"
+      "receive_pd": "2026-01-16",
+      "obs": null
     },
     "LIVMSPT1301577": {
       "nf": "7736",
@@ -453,17 +502,22 @@
       "delivery": "2026-01-21",
       "dest": "SÃO PAULO - SP",
       "uf": "SP",
-      "receive_pd": "2026-01-16"
+      "receive_pd": "2026-01-16",
+      "obs": null
     },
     "LIVMEUR0701152": {
       "nf": "1045",
       "inv_date": "2026-03-16",
       "shipping": "2026-03-17",
-      "delivery": NaN,
+      "delivery": null,
       "dest": "RIBEIRÃO PRETO - SP",
       "uf": "SP",
-      "receive_pd": "2026-03-13"
+      "receive_pd": "2026-03-13",
+      "obs": null
     }
   },
-  "updated": "2026-03-17"
+  "updated": "2026-03-17",
+  "obs": {
+    "LIVMMUN2002305": "Cincatarina"
+  }
 }
