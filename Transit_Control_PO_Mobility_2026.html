@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Transit Control · POs E-Mobility 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:        #071a2e;
+    --navy2:       #0c2d4e;
+    --cyan:        #06c8e8;
+    --cyan2:       #38bdf8;
+    --white:       #f0f9ff;
+    --muted:       #7fb4cc;
+    --card-bg:     #0a2235;
+    --card-border: #103a57;
+    --green:  #22c55e;
+    --yellow: #f59e0b;
+    --amber:  #fb923c;
+    --red:    #f87171;
+    --purple: #a78bfa;
+    --blue:   #38bdf8;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* grid bg */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(6,200,232,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(6,200,232,.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none; z-index: 0;
+  }
+  /* glow */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 700px; height: 500px;
+    background: radial-gradient(ellipse, rgba(6,200,232,.10) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 36px 24px 72px;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    flex-wrap: wrap; gap: 12px;
+    animation: fadeUp .4s ease both;
+  }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--muted);
+    text-decoration: none; font-weight: 500;
+    letter-spacing: .02em; transition: color .2s;
+  }
+  .back-link:hover { color: var(--cyan); }
+  .logo-bar { display: flex; align-items: center; gap: 8px; }
+  .logo-bolt {
+    width: 30px; height: 30px;
+    background: linear-gradient(135deg, var(--cyan), var(--cyan2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    box-shadow: 0 0 14px rgba(6,200,232,.35);
+  }
+  .logo-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px; font-weight: 800; color: #fff;
+  }
+  .logo-name span { color: var(--cyan); }
+  .updated {
+    font-size: 11px; color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    margin-bottom: 28px;
+    animation: fadeUp .4s ease .05s both;
+  }
+  .page-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .page-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: var(--card-border);
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 800; letter-spacing: -.01em;
+    color: #fff; margin-bottom: 4px;
+  }
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--cyan), var(--cyan2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle { font-size: 13px; color: var(--muted); }
+
+  /* ── KPI STRIP ── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+    animation: fadeUp .4s ease .1s both;
+  }
+  .kpi {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px; padding: 18px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--kc, var(--cyan)), transparent);
+  }
+  .kpi-label {
+    font-size: 10px; font-weight: 700; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+  }
+  .kpi-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800;
+    color: var(--kc, var(--cyan)); line-height: 1;
+  }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── FILTERS ── */
+  .filters {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 16px;
+    animation: fadeUp .4s ease .15s both;
+  }
+  .filter-btn {
+    padding: 5px 14px; border-radius: 20px;
+    border: 1px solid var(--card-border);
+    background: transparent; color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all .2s;
+  }
+  .filter-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .filter-btn.active {
+    background: rgba(6,200,232,.12);
+    border-color: var(--cyan); color: var(--cyan);
+  }
+
+  /* ── PO CARD GROUPS ── */
+  .po-section {
+    margin-bottom: 28px;
+    animation: fadeUp .4s ease .2s both;
+  }
+  .po-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px; overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .po-card.hidden { display: none; }
+
+  /* PO header row */
+  .po-header {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 10px; padding: 16px 20px;
+    border-bottom: 1px solid var(--card-border);
+    background: rgba(6,200,232,.03);
+    cursor: pointer;
+    user-select: none;
+    transition: background .15s;
+  }
+  .po-header:hover { background: rgba(6,200,232,.06); }
+
+  .po-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 600;
+    color: var(--cyan);
+    flex-shrink: 0;
+  }
+  .po-meta {
+    display: flex; align-items: center; gap: 10px;
+    flex-wrap: wrap; flex: 1;
+  }
+  .po-ip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted);
+  }
+  .po-eta {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 600;
+  }
+
+  .po-collapse-icon {
+    margin-left: auto;
+    font-size: 12px; color: var(--muted);
+    transition: transform .25s;
+    flex-shrink: 0;
+  }
+  .po-card.collapsed .po-collapse-icon { transform: rotate(-90deg); }
+  .po-card.collapsed .po-body { display: none; }
+
+  /* table inside card */
+  .po-body { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  thead th {
+    background: rgba(6,200,232,.05);
+    border-bottom: 1px solid var(--card-border);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom: 1px solid rgba(16,58,87,.45);
+    transition: background .12s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(6,200,232,.04); }
+  td { padding: 12px 14px; vertical-align: middle; }
+
+  .code-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    color: var(--cyan2); white-space: nowrap;
+  }
+  .model-badge {
+    display: inline-block; padding: 3px 8px;
+    border-radius: 5px; font-size: 10px; font-weight: 700;
+    letter-spacing: .04em; white-space: nowrap;
+  }
+  .ac { background: rgba(34,197,94,.12); color: var(--green); border: 1px solid rgba(34,197,94,.25); }
+  .dc { background: rgba(6,200,232,.12); color: var(--cyan); border: 1px solid rgba(6,200,232,.25); }
+
+  .qty-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; font-weight: 700;
+    color: var(--white); text-align: right;
+  }
+  .date-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--white);
+    white-space: nowrap;
+  }
+  .date-na {
+    font-size: 11px; color: var(--muted); font-style: italic;
+  }
+  .dest-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; white-space: nowrap;
+  }
+  .dest-cwb { background: rgba(56,189,248,.12); color: var(--blue); border: 1px solid rgba(56,189,248,.3); }
+  .dest-for { background: rgba(245,158,11,.12); color: var(--yellow); border: 1px solid rgba(245,158,11,.3); }
+
+  /* ── STATUS BADGE ── */
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 10.5px; font-weight: 700; white-space: nowrap;
+  }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .s-entregue   { background: rgba(34,197,94,.12);  color: var(--green);  border: 1px solid rgba(34,197,94,.3); }
+  .s-transito   { background: rgba(6,200,232,.12);  color: var(--cyan);   border: 1px solid rgba(6,200,232,.3); }
+  .s-transito .status-dot { animation: pulse 2s infinite; }
+  .s-desembaraco{ background: rgba(56,189,248,.12); color: var(--blue);   border: 1px solid rgba(56,189,248,.3); }
+  .s-desembaraco .status-dot { animation: pulse 1.5s infinite; }
+  .s-aguardando { background: rgba(245,158,11,.10); color: var(--yellow); border: 1px solid rgba(245,158,11,.25); }
+
+  /* ── NECESSITY BADGE ── */
+  .nec-badge {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 4px; font-size: 11px; font-weight: 600;
+    background: rgba(167,139,250,.10);
+    color: var(--purple);
+    border: 1px solid rgba(167,139,250,.25);
+    white-space: nowrap;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    margin-top: 24px; padding-top: 20px;
+    border-top: 1px solid var(--card-border);
+    animation: fadeUp .4s ease .3s both;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* footer */
+  .footer {
+    text-align: center; font-size: 11px; color: #2a5a7a;
+    margin-top: 32px; padding-top: 20px;
+    border-top: 1px solid var(--card-border);
+    animation: fadeUp .4s ease .35s both;
+  }
+  .footer b { color: var(--muted); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(6,200,232,.5); }
+    50%       { box-shadow: 0 0 0 5px rgba(6,200,232,0); }
+  }
+
+  @media (max-width: 600px) {
+    .kpi-value { font-size: 22px; }
+    .topbar { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex; gap: 0;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--card-border);
+    animation: fadeUp .4s ease .12s both;
+  }
+  .tab-btn {
+    padding: 10px 22px;
+    border: none; background: transparent;
+    color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all .2s; white-space: nowrap;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .tab-btn:hover { color: var(--white); }
+  .tab-btn.active { color: var(--white); border-bottom-color: var(--cyan); }
+  .tab-btn.tab-alert.active { border-bottom-color: #fb923c; }
+  .tab-btn.tab-alert { color: #fb923c; }
+  .tab-btn.tab-alert:hover { color: #fdba74; }
+  .tab-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 18px; height: 18px; padding: 0 5px;
+    border-radius: 9px; font-size: 10px; font-weight: 800;
+    background: rgba(251,146,60,.2); color: #fb923c;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── ALERT on pending PO header ── */
+  .alert-flag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 10px; font-weight: 800;
+    background: rgba(251,146,60,.15);
+    color: #fb923c;
+    border: 1px solid rgba(251,146,60,.3);
+    letter-spacing: .04em; white-space: nowrap;
+    animation: flagPulse 2.5s ease infinite;
+  }
+  @keyframes flagPulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: .6; }
+  }
+
+  /* ── PENDÊNCIAS TAB content ── */
+  .pend-banner {
+    background: linear-gradient(135deg, rgba(251,146,60,.10), rgba(245,158,11,.06));
+    border: 1px solid rgba(251,146,60,.3);
+    border-left: 4px solid #fb923c;
+    border-radius: 12px; padding: 18px 22px;
+    margin-bottom: 24px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .pend-banner-icon { font-size: 26px; flex-shrink: 0; line-height: 1; }
+  .pend-banner-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 800; color: #fb923c; margin-bottom: 4px;
+  }
+  .pend-banner-body { font-size: 12px; color: #fbbf74; line-height: 1.6; }
+  .pend-banner-body strong { color: var(--white); }
+
+  .pend-summary {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 14px; overflow: hidden; margin-bottom: 20px;
+  }
+  .pend-summary-head {
+    padding: 12px 18px; border-bottom: 1px solid var(--card-border);
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+    color: var(--muted); text-transform: uppercase; letter-spacing: .08em;
+    background: rgba(251,146,60,.04);
+  }
+  .pend-row {
+    display: grid;
+    grid-template-columns: 160px 140px 80px 1fr 80px 80px;
+    gap: 0; align-items: center;
+    border-bottom: 1px solid rgba(16,58,87,.45);
+    padding: 12px 18px;
+    font-size: 12px;
+    transition: background .12s;
+  }
+  .pend-row:last-child { border-bottom: none; }
+  .pend-row:hover { background: rgba(251,146,60,.04); }
+  .pend-row-head {
+    background: rgba(6,200,232,.04);
+    font-size: 9.5px; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .dias-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; white-space: nowrap;
+  }
+  .dias-red  { background: rgba(248,113,113,.12); color: #f87171; border: 1px solid rgba(248,113,113,.25); }
+  .dias-mid  { background: rgba(245,158,11,.12);  color: var(--yellow); border: 1px solid rgba(245,158,11,.25); }
+  .dias-ok   { background: rgba(34,197,94,.12);   color: var(--green);  border: 1px solid rgba(34,197,94,.25); }
+
+  .pend-detail-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(251,146,60,.2);
+    border-left: 3px solid #fb923c;
+    border-radius: 14px; overflow: hidden; margin-bottom: 14px;
+  }
+  .pend-detail-head {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(251,146,60,.12);
+    background: rgba(251,146,60,.03);
+  }
+  .pend-po-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 600; color: #fb923c;
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <a href="index.html" class="back-link">← Central de Relatórios</a>
+    <div class="logo-bar">
+      <div class="logo-bolt">⚡</div>
+      <div class="logo-name">LIVO<span>LTEK</span></div>
+    </div>
+    <div class="updated">
+      <span class="live-dot"></span>
+      Atualizado · 18 Mar 2026
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="page-label">📦 E-Mobility</div>
+    <h1>Transit Control · <em>POs 2026</em></h1>
+    <div class="subtitle">Carregadores EV em trânsito da China — somente itens de mobilidade elétrica</div>
+  </div>
+
+  <!-- ALERT BANNER -->
+  <div style="background:linear-gradient(135deg,rgba(251,146,60,.12),rgba(245,158,11,.08));border:1px solid rgba(251,146,60,.35);border-left:4px solid #fb923c;border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:14px;animation:fadeUp .4s ease .08s both">
+    <div style="font-size:22px;filter:drop-shadow(0 0 6px rgba(251,146,60,.5))">⚠️</div>
+    <div style="flex:1">
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fb923c;margin-bottom:3px">3 POs sem previsão de embarque da China</div>
+      <div style="font-size:12px;color:#fbbf74;line-height:1.5">FORE011, CWBE004 e CWBE005 com ETA indefinida — ainda não saíram da fábrica. <strong style="color:#fff">417 unidades</strong> pendentes.</div>
+    </div>
+    <button onclick="switchTab('pendencias')" style="flex-shrink:0;display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;background:rgba(251,146,60,.15);border:1px solid rgba(251,146,60,.4);color:#fb923c;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Ver pendências →</button>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi" style="--kc: var(--cyan)">
+      <div class="kpi-label">POs Ativos</div>
+      <div class="kpi-value">4</div>
+      <div class="kpi-sub">CWBE001 · FORE011 · CWBE004 · CWBE005</div>
+    </div>
+    <div class="kpi" style="--kc: var(--green)">
+      <div class="kpi-label">Unidades Previstas</div>
+      <div class="kpi-value">440</div>
+      <div class="kpi-sub">Total de carregadores 2026</div>
+    </div>
+    <div class="kpi" style="--kc: var(--yellow)">
+      <div class="kpi-label">Aguardando Embarque</div>
+      <div class="kpi-value">3</div>
+      <div class="kpi-sub">FORE011 · CWBE004 · CWBE005</div>
+    </div>
+    <div class="kpi" style="--kc: var(--blue)">
+      <div class="kpi-label">Em Desembaraço</div>
+      <div class="kpi-value">1</div>
+      <div class="kpi-sub">CWBE001 · ETA 23/03/2026</div>
+    </div>
+    <div class="kpi" style="--kc: var(--purple)">
+      <div class="kpi-label">Destinos</div>
+      <div class="kpi-value">2</div>
+      <div class="kpi-sub">Curitiba (CWB) · Fortaleza (FOR)</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-todos" onclick="switchTab('todos')">📦 Todos os POs</button>
+    <button class="tab-btn tab-alert" id="tab-pendencias" onclick="switchTab('pendencias')">⚠️ Pendências <span class="tab-badge">3</span></button>
+  </div>
+
+  <!-- ══ TAB: TODOS OS POs ══ -->
+  <div class="tab-panel active" id="panel-todos">
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">Todos os POs</button>
+    <button class="filter-btn" data-filter="cwb">🔵 Curitiba (CWB)</button>
+    <button class="filter-btn" data-filter="for">🟡 Fortaleza (FOR)</button>
+    <button class="filter-btn" data-filter="desembaraco">Em desembaraço</button>
+    <button class="filter-btn" data-filter="aguardando">Aguardando embarque</button>
+  </div>
+
+  <!-- PO CARDS -->
+  <div class="po-section" id="po-list">
+
+    <!-- ─ PO 1: CWBE001/2026 ─ -->
+    <div class="po-card" data-dest="cwb" data-status="desembaraco">
+      <div class="po-header" onclick="toggleCard(this)">
+        <div class="po-num">CWBE001/2026</div>
+        <div class="po-meta">
+          <span class="po-ip">IP: H-CWB001/2026</span>
+          <span class="po-eta">
+            <span class="status-badge s-desembaraco">
+              <span class="status-dot"></span>
+              Em processo de desembaraço
+            </span>
+          </span>
+          <span class="po-eta" style="color:var(--white);font-size:12px">
+            📅 ETA: <strong style="color:var(--cyan)">23/03/2026</strong>
+          </span>
+          <span class="dest-badge dest-cwb">📍 Paranaguá → Curitiba</span>
+        </div>
+        <div class="po-collapse-icon">▼</div>
+      </div>
+      <div class="po-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Necessity</th>
+              <th>Livoltek Code</th>
+              <th>Modelo / Tipo</th>
+              <th>Descrição</th>
+              <th>PO Sent</th>
+              <th>ETA Destination</th>
+              <th>Destino</th>
+              <th style="text-align:right">Qty</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="nec-badge">Mar/26</span></td>
+              <td><span class="code-cell">C04010E2EAFER11003</span></td>
+              <td><span class="model-badge ac">AC · 40 kW</span></td>
+              <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">MC Series, 40kW, 400Vac, CCS2 133A, parede</td>
+              <td><span class="date-val">10/11/2025</span></td>
+              <td><span class="date-val">23/03/2026</span></td>
+              <td><span class="dest-badge dest-cwb">Curitiba</span></td>
+              <td class="qty-cell">10</td>
+              <td><span class="status-badge s-desembaraco"><span class="status-dot"></span>Desembaraço</span></td>
+            </tr>
+            <tr>
+              <td><span class="nec-badge">Mar/26</span></td>
+              <td><span class="code-cell">M18010E2EYFIR11003</span></td>
+              <td><span class="model-badge dc">DC · 180 kW</span></td>
+              <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">MotionFast 180kW, 2×CCS2 300A, solo, 4G/RFID</td>
+              <td><span class="date-val">10/11/2025</span></td>
+              <td><span class="date-val">23/03/2026</span></td>
+              <td><span class="dest-badge dest-cwb">Curitiba</span></td>
+              <td class="qty-cell">13</td>
+              <td><span class="status-badge s-desembaraco"><span class="status-dot"></span>Desembaraço</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─ PO 2: FORE011/2026 ─ -->
+    <div class="po-card" data-dest="for" data-status="aguardando" style="border-left:3px solid #fb923c;">
+      <div class="po-header" onclick="toggleCard(this)">
+        <div class="po-num">FORE011/2026</div>
+        <div class="po-meta">
+          <span class="po-ip">IP: H-FOR006/2026</span>
+          <span class="po-eta">
+            <span class="status-badge s-aguardando">
+              <span class="status-dot"></span>
+              Aguardando embarque
+            </span>
+          </span>
+          <span class="po-eta" style="color:var(--muted);font-size:12px">
+            📅 ETA: <strong style="color:var(--muted)">—</strong>
+          </span>
+          <span class="dest-badge dest-for">📍 Fortaleza</span>
+          <span class="alert-flag">⚠️ SEM ETD · 106 dias</span>
+        </div>
+        <div class="po-collapse-icon">▼</div>
+      </div>
+      <div class="po-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Necessity</th>
+              <th>Livoltek Code</th>
+              <th>Modelo / Tipo</th>
+              <th>Descrição</th>
+              <th>PO Sent</th>
+              <th>ETA Destination</th>
+              <th>Destino</th>
+              <th style="text-align:right">Qty</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="nec-badge">Abr/26</span></td>
+              <td><span class="code-cell">C04010E2EAFER11003</span></td>
+              <td><span class="model-badge ac">AC · 40 kW</span></td>
+              <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">MC Series, 40kW, 400Vac, CCS2 133A, parede</td>
+              <td><span class="date-val">03/12/2025</span></td>
+              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span class="dest-badge dest-for">Fortaleza</span></td>
+              <td class="qty-cell">20</td>
+              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─ PO 3: CWBE004/2026 ─ -->
+    <div class="po-card" data-dest="cwb" data-status="aguardando" style="border-left:3px solid #fb923c;">
+      <div class="po-header" onclick="toggleCard(this)">
+        <div class="po-num">CWBE004/2026</div>
+        <div class="po-meta">
+          <span class="po-ip">IP: H-CWB003/2026</span>
+          <span class="po-eta">
+            <span class="status-badge s-aguardando">
+              <span class="status-dot"></span>
+              Aguardando embarque
+            </span>
+          </span>
+          <span class="po-eta" style="color:var(--muted);font-size:12px">
+            📅 ETA: <strong style="color:var(--muted)">—</strong>
+          </span>
+          <span class="dest-badge dest-cwb">📍 Paranaguá → Curitiba</span>
+          <span class="alert-flag">⚠️ SEM ETD · 64 dias</span>
+        </div>
+        <div class="po-collapse-icon">▼</div>
+      </div>
+      <div class="po-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Necessity</th>
+              <th>Livoltek Code</th>
+              <th>Modelo / Tipo</th>
+              <th>Descrição</th>
+              <th>PO Sent</th>
+              <th>ETA Destination</th>
+              <th>Destino</th>
+              <th style="text-align:right">Qty</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="nec-badge">Jun/26</span></td>
+              <td><span class="code-cell">M16010E2GYGHR11001</span></td>
+              <td><span class="model-badge dc">DC · 160 kW</span></td>
+              <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">MotionFast 160kW</td>
+              <td><span class="date-val">13/01/2026</span></td>
+              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span class="dest-badge dest-cwb">Curitiba</span></td>
+              <td class="qty-cell">1</td>
+              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─ PO 4: CWBE005/2026 ─ -->
+    <div class="po-card" data-dest="cwb" data-status="aguardando" style="border-left:3px solid #fb923c;">
+      <div class="po-header" onclick="toggleCard(this)">
+        <div class="po-num">CWBE005/2026</div>
+        <div class="po-meta">
+          <span class="po-ip">IP: pending</span>
+          <span class="alert-flag">⚠️ SEM ETD · 9 dias</span>
+          <span class="po-eta">
+            <span class="status-badge s-aguardando">
+              <span class="status-dot"></span>
+              Aguardando embarque
+            </span>
+          </span>
+          <span class="po-eta" style="color:var(--muted);font-size:12px">
+            📅 ETA: <strong style="color:var(--muted)">—</strong>
+          </span>
+          <span class="dest-badge dest-cwb">📍 Paranaguá → Curitiba</span>
+        </div>
+        <div class="po-collapse-icon">▼</div>
+      </div>
+      <div class="po-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Necessity</th>
+              <th>Livoltek Code</th>
+              <th>Modelo / Tipo</th>
+              <th>Descrição</th>
+              <th>PO Sent</th>
+              <th>ETA Destination</th>
+              <th>Destino</th>
+              <th style="text-align:right">Qty</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="nec-badge">Set/26</span></td>
+              <td><span class="code-cell">A0220400E11R11005</span></td>
+              <td><span class="model-badge ac">AC · 22 kW</span></td>
+              <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">Carregador AC 22kW</td>
+              <td><span class="date-val">09/03/2026</span></td>
+              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span class="dest-badge dest-cwb">Curitiba</span></td>
+              <td class="qty-cell">300</td>
+              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+            </tr>
+            <tr>
+              <td><span class="nec-badge">Set/26</span></td>
+              <td><span class="code-cell">C04010E2EAFER11003</span></td>
+              <td><span class="model-badge ac">AC · 40 kW</span></td>
+              <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">MC Series, 40kW, 400Vac, CCS2 133A, parede</td>
+              <td><span class="date-val">09/03/2026</span></td>
+              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span class="dest-badge dest-cwb">Curitiba</span></td>
+              <td class="qty-cell">20</td>
+              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+            </tr>
+            <tr>
+              <td><span class="nec-badge">Set/26</span></td>
+              <td><span class="code-cell">C06010E2EAFGR11003</span></td>
+              <td><span class="model-badge dc">DC · 60 kW</span></td>
+              <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">MC Series, 60kW, 400Vac, 2×CCS2 200A, parede</td>
+              <td><span class="date-val">09/03/2026</span></td>
+              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span class="dest-badge dest-cwb">Curitiba</span></td>
+              <td class="qty-cell">10</td>
+              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+            </tr>
+            <tr>
+              <td><span class="nec-badge">Set/26</span></td>
+              <td><span class="code-cell">M0601000E2EYR11001</span></td>
+              <td><span class="model-badge dc">DC · 60 kW</span></td>
+              <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">DCFC 60kW, 2×CCS2 200A, STARCHARGE, 4G</td>
+              <td><span class="date-val">09/03/2026</span></td>
+              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span class="dest-badge dest-cwb">Curitiba</span></td>
+              <td class="qty-cell">20</td>
+              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+            </tr>
+            <tr>
+              <td><span class="nec-badge">Set/26</span></td>
+              <td><span class="code-cell">M1201000E2EYR11001</span></td>
+              <td><span class="model-badge dc">DC · 120 kW</span></td>
+              <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">DCFC 120kW, 2×CCS2 250A, STARCHARGE, 4G</td>
+              <td><span class="date-val">09/03/2026</span></td>
+              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span class="dest-badge dest-cwb">Curitiba</span></td>
+              <td class="qty-cell">40</td>
+              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+            </tr>
+            <tr>
+              <td><span class="nec-badge">Set/26</span></td>
+              <td><span class="code-cell">M18010E2EYFIR11003</span></td>
+              <td><span class="model-badge dc">DC · 180 kW</span></td>
+              <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">MotionFast 180kW, 2×CCS2 300A, 4G, RFID</td>
+              <td><span class="date-val">09/03/2026</span></td>
+              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span class="dest-badge dest-cwb">Curitiba</span></td>
+              <td class="qty-cell">5</td>
+              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+            </tr>
+            <tr>
+              <td><span class="nec-badge">Set/26</span></td>
+              <td><span class="code-cell">M18010E2GYFIR11001</span></td>
+              <td><span class="model-badge dc">DC · 180 kW</span></td>
+              <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">CC 180kW, MSF, 2×GB/T, RFID, ETH, 4G</td>
+              <td><span class="date-val">09/03/2026</span></td>
+              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span class="dest-badge dest-cwb">Curitiba</span></td>
+              <td class="qty-cell">1</td>
+              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /po-list -->
+  </div><!-- /panel-todos -->
+
+  <!-- ══ TAB: PENDÊNCIAS ══ -->
+  <div class="tab-panel" id="panel-pendencias">
+
+    <!-- banner -->
+    <div class="pend-banner">
+      <div class="pend-banner-icon">⚠️</div>
+      <div>
+        <div class="pend-banner-title">Itens sem previsão de embarque da China</div>
+        <div class="pend-banner-body">
+          ETA Destination = <strong>pendente</strong> + Status = <strong>Aguardando embarque</strong> indica que o item
+          <strong>ainda não saiu da fábrica</strong>. Confirmar ETD com a China para cada PO abaixo.
+        </div>
+      </div>
+    </div>
+
+    <!-- resumo por PO -->
+    <div class="pend-summary">
+      <div class="pend-summary-head">Resumo por PO</div>
+      <div class="pend-row pend-row-head">
+        <span>PO Number</span><span>IP Number</span><span>PO Sent</span>
+        <span>Dias sem ETD</span><span>Necessity</span><span>Destino</span>
+      </div>
+      <div class="pend-row">
+        <span><span class="code-cell" style="color:#fb923c">FORE011/2026</span></span>
+        <span><span class="code-cell">H-FOR006/2026</span></span>
+        <span><span class="date-val">03/12/2025</span></span>
+        <span><span class="dias-badge dias-red">🔴 106 dias — urgente</span></span>
+        <span><span class="nec-badge">Abr/26</span></span>
+        <span><span class="dest-badge dest-for">Fortaleza</span></span>
+      </div>
+      <div class="pend-row">
+        <span><span class="code-cell" style="color:#fb923c">CWBE004/2026</span></span>
+        <span><span class="code-cell">H-CWB003/2026</span></span>
+        <span><span class="date-val">13/01/2026</span></span>
+        <span><span class="dias-badge dias-mid">🟡 64 dias</span></span>
+        <span><span class="nec-badge">Jun/26</span></span>
+        <span><span class="dest-badge dest-cwb">Curitiba</span></span>
+      </div>
+      <div class="pend-row">
+        <span><span class="code-cell" style="color:#fb923c">CWBE005/2026</span></span>
+        <span><span style="font-size:11px;color:var(--muted);font-style:italic">pending</span></span>
+        <span><span class="date-val">09/03/2026</span></span>
+        <span><span class="dias-badge dias-ok">🟢 9 dias</span></span>
+        <span><span class="nec-badge">Set/26</span></span>
+        <span><span class="dest-badge dest-cwb">Curitiba</span></span>
+      </div>
+    </div>
+
+    <!-- FORE011 detail -->
+    <div class="pend-detail-card">
+      <div class="pend-detail-head">
+        <span class="pend-po-num">FORE011/2026</span>
+        <span class="po-ip">H-FOR006/2026</span>
+        <span class="alert-flag">⚠️ SEM ETD · 106 dias</span>
+        <span class="dest-badge dest-for">📍 Fortaleza</span>
+        <span style="font-size:11px;color:#f87171;font-weight:700;margin-left:4px">🔴 Mais urgente</span>
+      </div>
+      <div class="po-body"><table>
+        <thead><tr>
+          <th>Necessity</th><th>Livoltek Code</th><th>Tipo</th><th>Descrição</th>
+          <th>PO Sent</th><th>ETA</th><th style="text-align:right">Qty</th>
+        </tr></thead>
+        <tbody><tr>
+          <td><span class="nec-badge">Abr/26</span></td>
+          <td><span class="code-cell">C04010E2EAFER11003</span></td>
+          <td><span class="model-badge ac">AC · 40 kW</span></td>
+          <td style="font-size:11px;color:var(--muted);line-height:1.4">MC Series, 40kW, CCS2 133A, wall mounted</td>
+          <td><span class="date-val">03/12/2025</span></td>
+          <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:'JetBrains Mono',monospace">⚠️ —</span></td>
+          <td class="qty-cell">20</td>
+        </tr></tbody>
+      </table></div>
+    </div>
+
+    <!-- CWBE004 detail -->
+    <div class="pend-detail-card">
+      <div class="pend-detail-head">
+        <span class="pend-po-num">CWBE004/2026</span>
+        <span class="po-ip">H-CWB003/2026</span>
+        <span class="alert-flag">⚠️ SEM ETD · 64 dias</span>
+        <span class="dest-badge dest-cwb">📍 Curitiba</span>
+      </div>
+      <div class="po-body"><table>
+        <thead><tr>
+          <th>Necessity</th><th>Livoltek Code</th><th>Tipo</th><th>Descrição</th>
+          <th>PO Sent</th><th>ETA</th><th style="text-align:right">Qty</th>
+        </tr></thead>
+        <tbody><tr>
+          <td><span class="nec-badge">Jun/26</span></td>
+          <td><span class="code-cell">M16010E2GYGHR11001</span></td>
+          <td><span class="model-badge dc">DC · 160 kW</span></td>
+          <td style="font-size:11px;color:var(--muted);line-height:1.4">MotionFast 160kW</td>
+          <td><span class="date-val">13/01/2026</span></td>
+          <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:'JetBrains Mono',monospace">⚠️ —</span></td>
+          <td class="qty-cell">1</td>
+        </tr></tbody>
+      </table></div>
+    </div>
+
+    <!-- CWBE005 detail -->
+    <div class="pend-detail-card">
+      <div class="pend-detail-head">
+        <span class="pend-po-num">CWBE005/2026</span>
+        <span class="po-ip" style="color:var(--muted);font-style:italic">IP: pending</span>
+        <span class="alert-flag">⚠️ SEM ETD · 9 dias</span>
+        <span class="dest-badge dest-cwb">📍 Curitiba</span>
+        <span style="font-size:11px;color:var(--muted)">7 SKUs · maior lote</span>
+      </div>
+      <div class="po-body"><table>
+        <thead><tr>
+          <th>Necessity</th><th>Livoltek Code</th><th>Tipo</th><th>Descrição</th>
+          <th>PO Sent</th><th>ETA</th><th style="text-align:right">Qty</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="nec-badge">Set/26</span></td>
+            <td><span class="code-cell">A0220400E11R11005</span></td>
+            <td><span class="model-badge ac">AC · 22 kW</span></td>
+            <td style="font-size:11px;color:var(--muted);line-height:1.4">Carregador AC 22kW</td>
+            <td><span class="date-val">09/03/2026</span></td>
+            <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:'JetBrains Mono',monospace">⚠️ —</span></td>
+            <td class="qty-cell">300</td>
+          </tr>
+          <tr>
+            <td><span class="nec-badge">Set/26</span></td>
+            <td><span class="code-cell">C04010E2EAFER11003</span></td>
+            <td><span class="model-badge ac">AC · 40 kW</span></td>
+            <td style="font-size:11px;color:var(--muted);line-height:1.4">MC Series, 40kW, CCS2 133A, parede</td>
+            <td><span class="date-val">09/03/2026</span></td>
+            <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:'JetBrains Mono',monospace">⚠️ —</span></td>
+            <td class="qty-cell">20</td>
+          </tr>
+          <tr>
+            <td><span class="nec-badge">Set/26</span></td>
+            <td><span class="code-cell">C06010E2EAFGR11003</span></td>
+            <td><span class="model-badge dc">DC · 60 kW</span></td>
+            <td style="font-size:11px;color:var(--muted);line-height:1.4">MC Series, 60kW, 2×CCS2 200A, parede</td>
+            <td><span class="date-val">09/03/2026</span></td>
+            <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:'JetBrains Mono',monospace">⚠️ —</span></td>
+            <td class="qty-cell">10</td>
+          </tr>
+          <tr>
+            <td><span class="nec-badge">Set/26</span></td>
+            <td><span class="code-cell">M0601000E2EYR11001</span></td>
+            <td><span class="model-badge dc">DC · 60 kW</span></td>
+            <td style="font-size:11px;color:var(--muted);line-height:1.4">DCFC 60kW, 2×CCS2 200A, STARCHARGE</td>
+            <td><span class="date-val">09/03/2026</span></td>
+            <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:'JetBrains Mono',monospace">⚠️ —</span></td>
+            <td class="qty-cell">20</td>
+          </tr>
+          <tr>
+            <td><span class="nec-badge">Set/26</span></td>
+            <td><span class="code-cell">M1201000E2EYR11001</span></td>
+            <td><span class="model-badge dc">DC · 120 kW</span></td>
+            <td style="font-size:11px;color:var(--muted);line-height:1.4">DCFC 120kW, 2×CCS2 250A, STARCHARGE</td>
+            <td><span class="date-val">09/03/2026</span></td>
+            <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:'JetBrains Mono',monospace">⚠️ —</span></td>
+            <td class="qty-cell">40</td>
+          </tr>
+          <tr>
+            <td><span class="nec-badge">Set/26</span></td>
+            <td><span class="code-cell">M18010E2EYFIR11003</span></td>
+            <td><span class="model-badge dc">DC · 180 kW</span></td>
+            <td style="font-size:11px;color:var(--muted);line-height:1.4">MotionFast 180kW, 2×CCS2 300A, 4G/RFID</td>
+            <td><span class="date-val">09/03/2026</span></td>
+            <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:'JetBrains Mono',monospace">⚠️ —</span></td>
+            <td class="qty-cell">5</td>
+          </tr>
+          <tr>
+            <td><span class="nec-badge">Set/26</span></td>
+            <td><span class="code-cell">M18010E2GYFIR11001</span></td>
+            <td><span class="model-badge dc">DC · 180 kW</span></td>
+            <td style="font-size:11px;color:var(--muted);line-height:1.4">CC 180kW MSF, 2×GB/T, RFID, 4G</td>
+            <td><span class="date-val">09/03/2026</span></td>
+            <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:'JetBrains Mono',monospace">⚠️ —</span></td>
+            <td class="qty-cell">1</td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>
+
+  </div><!-- /panel-pendencias -->
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--blue)"></div>
+      Em processo de desembaraço
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--yellow)"></div>
+      Aguardando embarque (sem ETA definida)
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--green)"></div>
+      AC Charger
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--cyan)"></div>
+      DC Charger
+    </div>
+    <div class="legend-item" style="margin-left:auto;font-size:11px;color:var(--muted)">
+      Fonte: Transit Control (packing list) · Somente itens Mobility 2026 · Excluídos acessórios e peças
+    </div>
+  </div>
+
+  <div class="footer">
+    <b>Livoltek Power Brasil</b> · Uso interno · Gestão SM E-Mobility
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+  function toggleCard(header) {
+    header.closest('.po-card').classList.toggle('collapsed');
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('panel-' + name).classList.add('active');
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      document.querySelectorAll('#po-list .po-card').forEach(card => {
+        if (f === 'all')          card.classList.remove('hidden');
+        else if (f === 'cwb')     card.classList.toggle('hidden', card.dataset.dest !== 'cwb');
+        else if (f === 'for')     card.classList.toggle('hidden', card.dataset.dest !== 'for');
+        else if (f === 'desembaraco') card.classList.toggle('hidden', card.dataset.status !== 'desembaraco');
+        else if (f === 'aguardando')  card.classList.toggle('hidden', card.dataset.status !== 'aguardando');
+      });
+    });
+  });
+</script>
+</body>
+</html>
