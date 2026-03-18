@@ -81,7 +81,64 @@ function mon(date){const d=new Date(date);d.setHours(0,0,0,0);d.setDate(d.getDat
 function addD(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
 function fmtBRL(v){return v>0?new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",minimumFractionDigits:0,maximumFractionDigits:0}).format(v):"—";}
 
-let FU={};  // loaded from data.json
+const FU={
+  "LIVMFUN0701643":{nf:"842",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-05",dest:"PAPANDUVA - SC",uf:"SC",receive_pd:"2026-01-27",obs:null},
+  "LIVMMUN0701003":{nf:"843",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-06",dest:"IMBITUBA - SC",uf:"SC",receive_pd:"2026-01-27",obs:null},
+  "LIVMMUN0701843":{nf:"845",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-10",dest:"ITAPOÁ - SC",uf:"SC",receive_pd:"2026-01-27",obs:null},
+  "LIVMGRE1301522":{nf:"903",inv_date:"2026-01-23",shipping:"2026-01-26",delivery:"2026-01-27",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-23",obs:null},
+  "LIVMGRE1301440":{nf:"902",inv_date:"2026-01-23",shipping:"2026-01-26",delivery:"2026-01-27",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-23",obs:null},
+  "LIVMADR1501888":null,
+  "LIVMJOR1501391":{nf:"853",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-26",dest:"BELO HORIZONTE – MG",uf:"MG",receive_pd:"2026-01-16",obs:null},
+  "LIVMENE1501105":{nf:"851",inv_date:"2026-01-16",shipping:"2026-01-16",delivery:"2026-01-16",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-01-15",obs:null},
+  "LIVMGAD1601998":null,
+  "LIVMINF2201172":{nf:"904",inv_date:"2026-01-26",shipping:"2026-03-04",delivery:"2026-03-09",dest:"VITÓRIA DA CONQUISTA - BA",uf:"BA",receive_pd:"2026-01-23",obs:null},
+  "LIVMTRO2701296":{nf:"948",inv_date:"2026-02-09",shipping:"2026-02-09",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-05",obs:null},
+  "LIVMTRO2701452":{nf:"913",inv_date:"2026-01-29",shipping:"2026-02-02",delivery:"2026-02-04",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-29",obs:null},
+  "LIVMTRO0302040":{nf:"925",inv_date:"2026-02-04",shipping:"2026-02-05",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-03",obs:null},
+  "LIVMENE2201840":{nf:"908",inv_date:"2026-01-27",shipping:"2026-01-27",delivery:"2026-01-27",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-01-27",obs:null},
+  "LIVPBRA2601633":{nf:"914",inv_date:"2026-01-29",shipping:"2026-02-06",delivery:"2026-02-09",dest:"SÃO JOSÉ - SC",uf:"SC",receive_pd:"2026-01-28",obs:null},
+  "LIVMYEL2701851":{nf:"949",inv_date:"2026-02-09",shipping:"2026-02-10",delivery:"2026-02-23",dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-02-06",obs:null},
+  "LIVMYEL2701380":{nf:"963",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-23",dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-02-11",obs:null},
+  "LIVMVOR0202552":{nf:"961",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-18",dest:"SANTANA DE PARNAIBA - SP",uf:"SP",receive_pd:"2026-02-11",obs:null},
+  "LIVMDAN0302920":{nf:"943",inv_date:"2026-02-05",shipping:"2026-02-06",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-04",obs:null},
+  "LIVMZOO2901269":{nf:"920",inv_date:"2026-02-03",shipping:"2026-02-04",delivery:"2026-02-11",dest:"CASCAVEL - PR",uf:"PR",receive_pd:"2026-01-30",obs:null},
+  "LIVMDRS0402680":{nf:"944",inv_date:"2026-02-06",shipping:"2026-02-06",delivery:"2026-02-24",dest:"CAXIAS DO SUL - RS",uf:"RS",receive_pd:"2026-02-04",obs:null},
+  "LIVMMAR0902802":{nf:"959",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-27",dest:"SUMARÉ - SP",uf:"SP",receive_pd:"2026-02-10",obs:null},
+  "LIVMFAB0902727":{nf:"960",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-27",dest:"JUNDIAÍ - SP",uf:"SP",receive_pd:"2026-02-10",obs:null},
+  "LIVMCIA1002389":{nf:"962",inv_date:"2026-02-11",shipping:"2026-02-12",delivery:"2026-02-20",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-10",obs:null},
+  "LIVMMAR1202921":{nf:"970",inv_date:"2026-02-18",shipping:"2026-02-23",delivery:"2026-03-12",dest:"FLORIANÓPOLIS - SC",uf:"SC",receive_pd:"2026-02-18",obs:null},
+  "LIVMPAT1902119":{nf:"984",inv_date:"2026-02-26",shipping:"2026-02-27",delivery:"2026-03-16",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-23",obs:null},
+  "LIVMMUN2002305":{nf:"988",inv_date:"2026-03-02",shipping:"2026-03-02",delivery:"2026-03-16",dest:"SANTA CATARINA - SC",uf:"SC",receive_pd:"2026-02-27",obs:"Cincatarina"},
+  "LIVMDIM2002356":{nf:"1010",inv_date:"2026-02-27",shipping:"2026-03-14",delivery:"2026-03-16",dest:"JOAÇABA - SC",uf:"SC",receive_pd:"2026-02-27",obs:null},
+  "LIVMCIA2402358":null,
+  "LIVMYEL2502787":{nf:"999",inv_date:"2026-03-02",shipping:"2026-03-04",delivery:"2026-03-05",dest:"APARECIDA DE GOIANIA - GO",uf:"GO",receive_pd:"2026-02-26",obs:null},
+  "LIVMREN2502006":{nf:"1002",inv_date:"2026-03-03",shipping:"2026-03-05",delivery:null,dest:"SÃO JOSÉ DOS PINHAIS - PR",uf:"PR",receive_pd:"2026-02-27",obs:null},
+  "LIVMENE2502011":{nf:"998",inv_date:"2026-03-02",shipping:"2026-03-02",delivery:"2026-03-02",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-02-25",obs:null},
+  "LIVMEUR0203002":null,
+  "LIVMDIM0203074":{nf:"1007",inv_date:"2026-03-05",shipping:"2026-03-06",delivery:null,dest:"FLORIANÓPOLIS - SC",uf:"SC",receive_pd:"2026-03-02",obs:null},
+  "LIVMMUL0203701":{nf:"1046",inv_date:"2026-03-16",shipping:null,delivery:null,dest:"SÃO LUIS - MA",uf:"MA",receive_pd:"2026-03-13",obs:null},
+  "LIVMPOW0203363":{nf:"1023",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:null,dest:"RIO DE JANEIRO - RJ",uf:"RJ",receive_pd:"2026-03-09",obs:null},
+  "LIVMENZ0403327":null,
+  "LIVMEMO0701137":{nf:"1018",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"SANTO ANDRÉ - SP",uf:"SP",receive_pd:"2026-03-09",obs:null},
+  "LIVMEMO0701138":{nf:"1019",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-03-09",obs:null},
+  "LIVMEMO0701139":{nf:"1020",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-14",dest:"LIMEIRA - SP",uf:"SP",receive_pd:"2026-03-09",obs:null},
+  "LIVMEMO0701140":{nf:"1021",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"CAÇAPAVA - SP",uf:"SP",receive_pd:"2026-03-09",obs:null},
+  "LIVMENE0701142":{nf:"1011",inv_date:"2026-03-09",shipping:"2026-03-10",delivery:null,dest:"CAMPO GRANDE - MS",uf:"MS",receive_pd:"2026-03-06",obs:null},
+  "LIVMJ7S0701143":{nf:"1047",inv_date:"2026-03-16",shipping:"2026-03-18",delivery:"2026-04-02",dest:"GOIANIA - GO",uf:"GO",receive_pd:"2026-03-13",obs:null},
+  "LIVMDIM0701144":{nf:"1022",inv_date:"2026-03-11",shipping:null,delivery:null,dest:"PORTO BELO - SC",uf:"SC",receive_pd:"2026-03-09",obs:null},
+  "LIVMYEL0701147":{nf:null,inv_date:null,shipping:null,delivery:null,dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-03-13",obs:null},
+  "LIVMSEI1025016":{nf:"730",inv_date:"2026-01-23",shipping:"2026-01-27",delivery:"2026-01-28",dest:"MOGI DAS CRUZES - SP",uf:"SP",receive_pd:"2026-01-23",obs:null},
+  "LIVMGW-0112967":{nf:"762",inv_date:"2026-01-14",shipping:"2026-01-16",delivery:"2026-01-23",dest:"SÃO JOSÉ DO RIO PRETO - SP",uf:"SP",receive_pd:"2026-01-14",obs:null},
+  "LIVMMUN1612133":{nf:"7576",inv_date:"2026-01-08",shipping:"2026-01-12",delivery:"2026-01-29",dest:"Rodeio - SC",uf:"SC",receive_pd:"2026-01-08",obs:null},
+  "LIVMPOW0601511":{nf:"841",inv_date:"2026-01-07",shipping:"2026-01-08",delivery:"2026-01-20",dest:"PINHAIS - PR",uf:"PR",receive_pd:"2026-01-06",obs:null},
+  "LIVMMUN0701622":{nf:"844",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-05",dest:"ITAPOÁ - SC",uf:"SC",receive_pd:"2026-01-27",obs:null},
+  "LIVMZUU1612305":{nf:"849",inv_date:"2026-01-15",shipping:"2026-01-16",delivery:"2026-01-23",dest:"SÃO BERNARDO DO CAMPO - SP",uf:"SP",receive_pd:"2026-01-14",obs:null},
+  "LIVMSPT1301499":{nf:"7733",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-21",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-16",obs:null},
+  "LIVMSPT1301926":{nf:"7734",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-21",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-16",obs:null},
+  "LIVMSPT1301832":{nf:"7735",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-21",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-16",obs:null},
+  "LIVMSPT1301577":{nf:"7736",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-21",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-16",obs:null},
+  "LIVMEUR0701152":{nf:"1045",inv_date:"2026-03-16",shipping:"2026-03-17",delivery:null,dest:"RIBEIRÃO PRETO - SP",uf:"SP",receive_pd:"2026-03-13",obs:null},
+};
 
 // ── Somente pedidos MOBILITY ──────────────────────────────────────────────────
 const RAW_ALL=[
@@ -168,7 +225,7 @@ function processOrder(o){
   return{...o,nf,has_nf,dt_nf,shipping,receive_pd,rec_sm,dias_sm,local_entrega:local_raw,totvs_flag,state,prazo,previsao,diff:d,status,fase,fu_delivery,fu_found,obs:fu?.obs||null};
 }
 
-// BASE is computed after FU loads (see useEffect below)
+const BASE=RAW_ALL.map(processOrder);
 
 const S_CFG={
   ATRASADO:   {label:"Atrasado",       bg:"#fef2f2",color:"#991b1b",dot:"#dc2626"},
@@ -224,8 +281,6 @@ const COLS=[
 ];
 
 function App(){
-  const[fuLoaded,setFuLoaded]=useState(false);
-  const[fuError,setFuError]=useState(false);
   const[vndF,setVndF]=useState("TODOS");
   const[stF,setStF]=useState("TODOS");
   const[wkF,setWkF]=useState(null);
@@ -235,23 +290,7 @@ function App(){
   const[asc,setAsc]=useState(true);
   const[del,setDel]=useState({});
 
-  // Fetch FU data from data.json
-  useEffect(()=>{
-    fetch("data.json?v="+Date.now())
-      .then(r=>{if(!r.ok)throw new Error("not found");return r.json();})
-      .then(d=>{
-        const fu = d.fu||{};
-        const obs = d.obs||{};
-        // merge obs into fu entries
-        Object.keys(obs).forEach(k=>{
-          if(fu[k]) fu[k].obs = obs[k];
-          else fu[k] = {obs: obs[k]};
-        });
-        FU=fu;
-        setFuLoaded(true);
-      })
-      .catch(()=>{setFuError(true);setFuLoaded(true);});
-  },[]);
+
 
   useEffect(()=>{
     try{const r=localStorage.getItem("liv_mob_del_2026");if(r)setDel(JSON.parse(r));}catch{}
@@ -265,7 +304,7 @@ function App(){
     });
   };
 
-  const orders=useMemo(()=>RAW_ALL.map(processOrder).map(o=>{
+  const orders=useMemo(()=>BASE.map(o=>{
     const k=o.pedido.trim();
     const dataE=del[k]||o.fu_delivery||null;
     const ent=!!dataE;
@@ -318,14 +357,6 @@ function App(){
       return asc?va.localeCompare(vb):vb.localeCompare(va);
     });
   },[orders,sit,vndF,stF,q,wkF,sc,asc]);
-
-  if(!fuLoaded) return(
-    <div style={{fontFamily:"'Segoe UI',system-ui,sans-serif",background:"#f0f9ff",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:12}}>
-      <div style={{width:36,height:36,border:"3px solid #bae6fd",borderTopColor:"#0ea5e9",borderRadius:"50%",animation:"spin .7s linear infinite"}}/>
-      <div style={{color:"#0369a1",fontSize:13,fontWeight:600}}>Carregando dados...</div>
-      <style>{"@keyframes spin{to{transform:rotate(360deg)}}"}</style>
-    </div>
-  );
 
   return(
     <div style={{fontFamily:"'Segoe UI',system-ui,sans-serif",background:"#f0f9ff",minHeight:"100vh"}}>
