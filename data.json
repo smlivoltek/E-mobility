@@ -1,0 +1,469 @@
+{
+  "fu": {
+    "LIVMFUN0701643": {
+      "nf": "842",
+      "inv_date": "2026-01-27",
+      "shipping": "2026-01-29",
+      "delivery": "2026-02-05",
+      "dest": "PAPANDUVA - SC",
+      "uf": "SC",
+      "receive_pd": "2026-01-27"
+    },
+    "LIVMMUN0701003": {
+      "nf": "843",
+      "inv_date": "2026-01-27",
+      "shipping": "2026-01-29",
+      "delivery": "2026-02-06",
+      "dest": "IMBITUBA - SC",
+      "uf": "SC",
+      "receive_pd": "2026-01-27"
+    },
+    "LIVMMUN0701843": {
+      "nf": "845",
+      "inv_date": "2026-01-27",
+      "shipping": "2026-01-29",
+      "delivery": "2026-02-10",
+      "dest": "ITAPOÁ - SC",
+      "uf": "SC",
+      "receive_pd": "2026-01-27"
+    },
+    "LIVMGRE1301522": {
+      "nf": "903",
+      "inv_date": "2026-01-23",
+      "shipping": "2026-01-26",
+      "delivery": "2026-01-27",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-01-23"
+    },
+    "LIVMGRE1301440": {
+      "nf": "902",
+      "inv_date": "2026-01-23",
+      "shipping": "2026-01-26",
+      "delivery": "2026-01-27",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-01-23"
+    },
+    "LIVMADR1501888": null,
+    "LIVMJOR1501391": {
+      "nf": "853",
+      "inv_date": "2026-01-16",
+      "shipping": "2026-01-20",
+      "delivery": "2026-01-26",
+      "dest": "BELO HORIZONTE – MG",
+      "uf": "MG",
+      "receive_pd": "2026-01-16"
+    },
+    "LIVMENE1501105": {
+      "nf": "851",
+      "inv_date": "2026-01-16",
+      "shipping": "2026-01-16",
+      "delivery": "2026-01-16",
+      "dest": "CURITIBA - PR",
+      "uf": "PR",
+      "receive_pd": "2026-01-15"
+    },
+    "LIVMGAD1601998": null,
+    "LIVMINF2201172": {
+      "nf": "904",
+      "inv_date": "2026-01-26",
+      "shipping": "2026-03-04",
+      "delivery": "2026-03-09",
+      "dest": "VITÓRIA DA CONQUISTA - BA",
+      "uf": "BA",
+      "receive_pd": "2026-01-23"
+    },
+    "LIVMTRO2701296": {
+      "nf": "948",
+      "inv_date": "2026-02-09",
+      "shipping": "2026-02-09",
+      "delivery": "2026-02-10",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-02-05"
+    },
+    "LIVMTRO2701452": {
+      "nf": "913",
+      "inv_date": "2026-01-29",
+      "shipping": "2026-02-02",
+      "delivery": "2026-02-04",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-01-29"
+    },
+    "LIVMTRO0302040": {
+      "nf": "925",
+      "inv_date": "2026-02-04",
+      "shipping": "2026-02-05",
+      "delivery": "2026-02-10",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-02-03"
+    },
+    "LIVMENE2201840": {
+      "nf": "908",
+      "inv_date": "2026-01-27",
+      "shipping": "2026-01-27",
+      "delivery": "2026-01-27",
+      "dest": "CURITIBA - PR",
+      "uf": "PR",
+      "receive_pd": "2026-01-27"
+    },
+    "LIVPBRA2601633": {
+      "nf": "914",
+      "inv_date": "2026-01-29",
+      "shipping": "2026-02-06",
+      "delivery": "2026-02-09",
+      "dest": "SÃO JOSÉ - SC",
+      "uf": "SC",
+      "receive_pd": "2026-01-28"
+    },
+    "LIVMYEL2701851": {
+      "nf": "949",
+      "inv_date": "2026-02-09",
+      "shipping": "2026-02-10",
+      "delivery": "2026-02-23",
+      "dest": "BRASÍLIA - DF",
+      "uf": "DF",
+      "receive_pd": "2026-02-06"
+    },
+    "LIVMYEL2701380": {
+      "nf": "963",
+      "inv_date": "2026-02-11",
+      "shipping": "2026-02-13",
+      "delivery": "2026-02-23",
+      "dest": "BRASÍLIA - DF",
+      "uf": "DF",
+      "receive_pd": "2026-02-11"
+    },
+    "LIVMVOR0202552": {
+      "nf": "961",
+      "inv_date": "2026-02-11",
+      "shipping": "2026-02-13",
+      "delivery": "2026-02-18",
+      "dest": "SANTANA DE PARNAIBA - SP",
+      "uf": "SP",
+      "receive_pd": "2026-02-11"
+    },
+    "LIVMDAN0302920": {
+      "nf": "943",
+      "inv_date": "2026-02-05",
+      "shipping": "2026-02-06",
+      "delivery": "2026-02-10",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-02-04"
+    },
+    "LIVMZOO2901269": {
+      "nf": "920",
+      "inv_date": "2026-02-03",
+      "shipping": "2026-02-04",
+      "delivery": "2026-02-11",
+      "dest": "CASCAVEL - PR",
+      "uf": "PR",
+      "receive_pd": "2026-01-30"
+    },
+    "LIVMDRS0402680": {
+      "nf": "944",
+      "inv_date": "2026-02-06",
+      "shipping": "2026-02-06",
+      "delivery": "2026-02-24",
+      "dest": "CAXIAS DO SUL - RS",
+      "uf": "RS",
+      "receive_pd": "2026-02-04"
+    },
+    "LIVMMAR0902802": {
+      "nf": "959",
+      "inv_date": "2026-02-11",
+      "shipping": "2026-02-13",
+      "delivery": "2026-02-27",
+      "dest": "SUMARÉ - SP",
+      "uf": "SP",
+      "receive_pd": "2026-02-10"
+    },
+    "LIVMFAB0902727": {
+      "nf": "960",
+      "inv_date": "2026-02-11",
+      "shipping": "2026-02-13",
+      "delivery": "2026-02-27",
+      "dest": "JUNDIAÍ - SP",
+      "uf": "SP",
+      "receive_pd": "2026-02-10"
+    },
+    "LIVMCIA1002389": {
+      "nf": "962",
+      "inv_date": "2026-02-11",
+      "shipping": "2026-02-12",
+      "delivery": "2026-02-20",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-02-10"
+    },
+    "LIVMMAR1202921": {
+      "nf": "970",
+      "inv_date": "2026-02-18",
+      "shipping": "2026-02-23",
+      "delivery": "2026-03-12",
+      "dest": "FLORIANÓPOLIS - SC",
+      "uf": "SC",
+      "receive_pd": "2026-02-18"
+    },
+    "LIVMPAT1902119": {
+      "nf": "984",
+      "inv_date": "2026-02-26",
+      "shipping": "2026-02-27",
+      "delivery": "2026-03-16",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-02-23"
+    },
+    "LIVMMUN2002305": {
+      "nf": "988",
+      "inv_date": "2026-03-02",
+      "shipping": "2026-03-02",
+      "delivery": "2026-03-16",
+      "dest": "SANTA CATARINA - SC",
+      "uf": "SC",
+      "receive_pd": "2026-02-27"
+    },
+    "LIVMDIM2002356": {
+      "nf": "1010",
+      "inv_date": "2026-02-27",
+      "shipping": "2026-03-14",
+      "delivery": "2026-03-16",
+      "dest": "JOAÇABA - SC",
+      "uf": "SC",
+      "receive_pd": "2026-02-27"
+    },
+    "LIVMCIA2402358": null,
+    "LIVMYEL2502787": {
+      "nf": "999",
+      "inv_date": "2026-03-02",
+      "shipping": "2026-03-04",
+      "delivery": "2026-03-05",
+      "dest": "APARECIDA DE GOIANIA - GO",
+      "uf": "GO",
+      "receive_pd": "2026-02-26"
+    },
+    "LIVMREN2502006": {
+      "nf": "1002",
+      "inv_date": "2026-03-03",
+      "shipping": "2026-03-05",
+      "delivery": NaN,
+      "dest": "SÃO JOSÉ DOS PINHAIS - PR",
+      "uf": "PR",
+      "receive_pd": "2026-02-27"
+    },
+    "LIVMENE2502011": {
+      "nf": "998",
+      "inv_date": "2026-03-02",
+      "shipping": "2026-03-02",
+      "delivery": "2026-03-02",
+      "dest": "CURITIBA - PR",
+      "uf": "PR",
+      "receive_pd": "2026-02-25"
+    },
+    "LIVMEUR0203002": null,
+    "LIVMDIM0203074": {
+      "nf": "1007",
+      "inv_date": "2026-03-05",
+      "shipping": "2026-03-06",
+      "delivery": NaN,
+      "dest": "FLORIANÓPOLIS - SC",
+      "uf": "SC",
+      "receive_pd": "2026-03-02"
+    },
+    "LIVMMUL0203701": {
+      "nf": "1046",
+      "inv_date": "2026-03-16",
+      "shipping": NaN,
+      "delivery": NaN,
+      "dest": "SÃO LUIS - MA",
+      "uf": "MA",
+      "receive_pd": "2026-03-13"
+    },
+    "LIVMPOW0203363": {
+      "nf": "1023",
+      "inv_date": "2026-03-11",
+      "shipping": "2026-03-12",
+      "delivery": NaN,
+      "dest": "RIO DE JANEIRO - RJ",
+      "uf": "RJ",
+      "receive_pd": "2026-03-09"
+    },
+    "LIVMENZ0403327": null,
+    "LIVMEMO0701137": {
+      "nf": "1018",
+      "inv_date": "2026-03-11",
+      "shipping": "2026-03-12",
+      "delivery": "2026-03-13",
+      "dest": "SANTO ANDRÉ - SP",
+      "uf": "SP",
+      "receive_pd": "2026-03-09"
+    },
+    "LIVMEMO0701138": {
+      "nf": "1019",
+      "inv_date": "2026-03-11",
+      "shipping": "2026-03-12",
+      "delivery": "2026-03-13",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-03-09"
+    },
+    "LIVMEMO0701139": {
+      "nf": "1020",
+      "inv_date": "2026-03-11",
+      "shipping": "2026-03-12",
+      "delivery": "2026-03-14",
+      "dest": "LIMEIRA - SP",
+      "uf": "SP",
+      "receive_pd": "2026-03-09"
+    },
+    "LIVMEMO0701140": {
+      "nf": "1021",
+      "inv_date": "2026-03-11",
+      "shipping": "2026-03-12",
+      "delivery": "2026-03-13",
+      "dest": "CAÇAPAVA - SP",
+      "uf": "SP",
+      "receive_pd": "2026-03-09"
+    },
+    "LIVMENE0701142": {
+      "nf": "1011",
+      "inv_date": "2026-03-09",
+      "shipping": "2026-03-10",
+      "delivery": NaN,
+      "dest": "CAMPO GRANDE - MS",
+      "uf": "MS",
+      "receive_pd": "2026-03-06"
+    },
+    "LIVMJ7S0701143": {
+      "nf": "1047",
+      "inv_date": "2026-03-16",
+      "shipping": "2026-03-18",
+      "delivery": "2026-04-02",
+      "dest": "GOIANIA - GO",
+      "uf": "GO",
+      "receive_pd": "2026-03-13"
+    },
+    "LIVMDIM0701144": {
+      "nf": "1022",
+      "inv_date": "2026-03-11",
+      "shipping": NaN,
+      "delivery": NaN,
+      "dest": "PORTO BELO - SC",
+      "uf": "SC",
+      "receive_pd": "2026-03-09"
+    },
+    "LIVMYEL0701147": {
+      "nf": NaN,
+      "inv_date": NaN,
+      "shipping": NaN,
+      "delivery": NaN,
+      "dest": "BRASÍLIA - DF",
+      "uf": "DF",
+      "receive_pd": "2026-03-13"
+    },
+    "LIVMSEI1025016": {
+      "nf": "730",
+      "inv_date": "2026-01-23",
+      "shipping": "2026-01-27",
+      "delivery": "2026-01-28",
+      "dest": "MOGI DAS CRUZES - SP",
+      "uf": "SP",
+      "receive_pd": "2026-01-23"
+    },
+    "LIVMGW-0112967": {
+      "nf": "762",
+      "inv_date": "2026-01-14",
+      "shipping": "2026-01-16",
+      "delivery": "2026-01-23",
+      "dest": "SÃO JOSÉ DO RIO PRETO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-01-14"
+    },
+    "LIVMMUN1612133": {
+      "nf": "7576",
+      "inv_date": "2026-01-08",
+      "shipping": "2026-01-12",
+      "delivery": "2026-01-29",
+      "dest": "Rodeio - SC",
+      "uf": "SC",
+      "receive_pd": "2026-01-08"
+    },
+    "LIVMPOW0601511": {
+      "nf": "841",
+      "inv_date": "2026-01-07",
+      "shipping": "2026-01-08",
+      "delivery": "2026-01-20",
+      "dest": "PINHAIS - PR",
+      "uf": "PR",
+      "receive_pd": "2026-01-06"
+    },
+    "LIVMMUN0701622": {
+      "nf": "844",
+      "inv_date": "2026-01-27",
+      "shipping": "2026-01-29",
+      "delivery": "2026-02-05",
+      "dest": "ITAPOÁ - SC",
+      "uf": "SC",
+      "receive_pd": "2026-01-27"
+    },
+    "LIVMZUU1612305": {
+      "nf": "849",
+      "inv_date": "2026-01-15",
+      "shipping": "2026-01-16",
+      "delivery": "2026-01-23",
+      "dest": "SÃO BERNARDO DO CAMPO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-01-14"
+    },
+    "LIVMSPT1301499": {
+      "nf": "7733",
+      "inv_date": "2026-01-16",
+      "shipping": "2026-01-20",
+      "delivery": "2026-01-21",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-01-16"
+    },
+    "LIVMSPT1301926": {
+      "nf": "7734",
+      "inv_date": "2026-01-16",
+      "shipping": "2026-01-20",
+      "delivery": "2026-01-21",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-01-16"
+    },
+    "LIVMSPT1301832": {
+      "nf": "7735",
+      "inv_date": "2026-01-16",
+      "shipping": "2026-01-20",
+      "delivery": "2026-01-21",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-01-16"
+    },
+    "LIVMSPT1301577": {
+      "nf": "7736",
+      "inv_date": "2026-01-16",
+      "shipping": "2026-01-20",
+      "delivery": "2026-01-21",
+      "dest": "SÃO PAULO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-01-16"
+    },
+    "LIVMEUR0701152": {
+      "nf": "1045",
+      "inv_date": "2026-03-16",
+      "shipping": "2026-03-17",
+      "delivery": NaN,
+      "dest": "RIBEIRÃO PRETO - SP",
+      "uf": "SP",
+      "receive_pd": "2026-03-13"
+    }
+  },
+  "updated": "2026-03-17"
+}
