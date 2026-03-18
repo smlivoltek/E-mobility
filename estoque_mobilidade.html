@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Livoltek E-Mobility — Estoque EV</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+function toggleGroup(groupId) {
+  const groupRow = event.currentTarget;
+  const isOpen = groupRow.classList.contains('open');
+  groupRow.classList.toggle('open');
+  document.querySelectorAll(`[data-group="${groupId}"]`).forEach(r => r.classList.toggle('visible', !isOpen));
+}
+let sortState = {};
+function sortTable(tableId, colIdx) {
+  const table = document.getElementById(tableId);
+  const tbody = table.tBodies[0];
+  const key = tableId + colIdx;
+  const dir = sortState[key] === 'asc' ? 'desc' : 'asc';
+  sortState[key] = dir;
+  [...table.querySelectorAll('th')].forEach((th,i) => { th.classList.remove('asc','desc'); if(i===colIdx) th.classList.add(dir); });
+  const groupRows = [...tbody.querySelectorAll('tr.group-row')];
+  if (groupRows.length) {
+    // table with expandable groups
+    groupRows.sort((a,b) => {
+      const av = parseFloat((a.cells[colIdx]?.innerText||'0').replace(/[^0-9.-]/g,''))||0;
+      const bv = parseFloat((b.cells[colIdx]?.innerText||'0').replace(/[^0-9.-]/g,''))||0;
+      return dir==='asc' ? av-bv : bv-av;
+    });
+    groupRows.forEach(row => {
+      const grp = row.getAttribute('data-group');
+      tbody.appendChild(row);
+      if(grp) document.querySelectorAll(`[data-group="${grp}"].sku-row`).forEach(r => tbody.appendChild(r));
+    });
+  } else {
+    // plain table (reservas)
+    const rows = [...tbody.querySelectorAll('tr')];
+    rows.sort((a,b) => {
+      const at = a.cells[colIdx]?.innerText||'';
+      const bt = b.cells[colIdx]?.innerText||'';
+      const av = parseFloat(at.replace(/[^0-9.-]/g,''));
+      const bv = parseFloat(bt.replace(/[^0-9.-]/g,''));
+      if (!isNaN(av) && !isNaN(bv)) return dir==='asc' ? av-bv : bv-av;
+      return dir==='asc' ? at.localeCompare(bt,'pt') : bt.localeCompare(at,'pt');
+    });
+    rows.forEach(r => tbody.appendChild(r));
+  }
+}
+function filterWarehouse(wh) {
+  document.querySelectorAll('.wh-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.wh-section').forEach(s => {
+    s.style.display = (wh==='ALL' || s.dataset.wh===wh) ? 'block' : 'none';
+  });
+}
+
+// Reservas: filter by product only
+function applyResFilter() {
+  const fCodigo = document.getElementById('f-codigo').value;
+  const rows = document.querySelectorAll('#res-body tr');
+  let count=0, total=0;
+  rows.forEach(row => {
+    const cells = row.cells;
+    const ok = fCodigo === 'ALL' || cells[3].innerText.trim() === fCodigo;
+    row.style.display = ok ? '' : 'none';
+    if(ok){ count++; total += parseInt(cells[6]?.innerText)||0; }
+  });
+  document.getElementById('res-count').textContent = `${count} reservas · ${total} un.`;
+}
+// Arrival date = today + 6 months
+function arrivalDate() {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 6);
+  return d.toLocaleDateString('pt-BR', {month:'short', year:'numeric'}).replace(' de ','/')
+         .replace(/^\w/, c => c.toUpperCase());
+}
+window.addEventListener('load', () => {
+  applyResFilter();
+  document.querySelectorAll('.arrival-date').forEach(el => el.textContent = 'PO hoje → ' + arrivalDate());
+});
+</script>
+<style>
+  :root { --navy:#0B1628; --navy2:#112040; --navy3:#1A2F55; --cyan:#00C8E0; --white:#F0F6FF; --muted:#8AA0C0; --neg:#FF4B6E; --warn:#FFB347; --pos:#00E096; --border:rgba(0,200,224,0.15); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--navy); color:var(--white); font-family:'Sora',sans-serif; min-height:100vh; }
+  header { background:var(--navy2); border-bottom:1px solid var(--border); padding:20px 40px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  .logo-block { display:flex; align-items:center; gap:12px; }
+  .logo-icon { width:38px; height:38px; background:var(--cyan); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .logo-text { font-size:17px; font-weight:800; }
+  .logo-text span { color:var(--cyan); }
+  .header-right { text-align:right; }
+  .update-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-family:'IBM Plex Mono',monospace; }
+  .update-date { font-size:14px; font-weight:600; color:var(--cyan); font-family:'IBM Plex Mono',monospace; }
+  .tabs { background:var(--navy2); border-bottom:1px solid var(--border); padding:0 40px; display:flex; }
+  .tab { padding:13px 22px; font-size:12px; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; transition:all 0.2s; text-transform:uppercase; letter-spacing:0.8px; }
+  .tab:hover { color:var(--white); }
+  .tab.active { color:var(--cyan); border-bottom-color:var(--cyan); }
+  .content { padding:32px 40px; max-width:1400px; margin:0 auto; }
+  .section { display:none; }
+  .section.active { display:block; }
+  .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin-bottom:32px; }
+  .kpi-card { background:var(--navy2); border:1px solid var(--border); border-radius:12px; padding:18px; position:relative; overflow:hidden; }
+  .kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--cyan); }
+  .kpi-card.alert::before { background:var(--neg); }
+  .kpi-card.warn::before { background:var(--warn); }
+  .kpi-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .kpi-value { font-size:30px; font-weight:800; font-family:'IBM Plex Mono',monospace; color:var(--cyan); line-height:1; }
+  .kpi-sub { font-size:10px; color:var(--muted); margin-top:5px; font-family:'IBM Plex Mono',monospace; }
+  .sec-title { font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+  .sec-title::before { content:''; display:inline-block; width:3px; height:14px; background:var(--cyan); border-radius:2px; }
+  .table-wrap { overflow-x:auto; margin-bottom:36px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  thead th { background:var(--navy3); padding:10px 14px; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); white-space:nowrap; border-bottom:1px solid var(--border); }
+  thead th.num { text-align:right; }
+  thead th.sortable { cursor:pointer; user-select:none; }
+  thead th.sortable:hover { color:var(--white); }
+  thead th.sortable::after { content:' ↕'; font-size:9px; opacity:0.4; }
+  thead th.asc::after { content:' ↑'; opacity:1; color:var(--cyan); }
+  thead th.desc::after { content:' ↓'; opacity:1; color:var(--cyan); }
+  /* filter row */
+  .filter-row th { background:var(--navy2); padding:6px 8px; border-bottom:1px solid var(--border); }
+  .filter-row input, .filter-row select {
+    width:100%; background:var(--navy3); border:1px solid var(--border); color:var(--white);
+    padding:5px 8px; border-radius:4px; font-size:11px; font-family:'Sora',sans-serif; outline:none;
+  }
+  .filter-row input::placeholder { color:var(--muted); }
+  .filter-row input:focus, .filter-row select:focus { border-color:var(--cyan); }
+  tbody tr { border-bottom:1px solid rgba(0,200,224,0.06); transition:background 0.15s; }
+  tbody tr:hover { background:rgba(0,200,224,0.04); }
+  tbody td { padding:10px 14px; white-space:nowrap; }
+  tbody td.num { text-align:right; font-family:'IBM Plex Mono',monospace; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700; text-transform:uppercase; }
+  .pos-val { color:var(--pos); } .zero-val { color:var(--muted); } .warn-val { color:var(--warn); font-weight:600; } .neg-val { color:var(--neg); font-weight:700; }
+  .wh-ftZ { color:#60C8FF; } .wh-cwb { color:#A0E4FF; } .wh-man { color:#7BFFDC; } .wh-man2 { color:#A8FFE0; }
+  .group-row { cursor:pointer; user-select:none; }
+  .group-row:hover { background:rgba(0,200,224,0.07) !important; }
+  .group-row td:first-child::before { content:'▶'; display:inline-block; font-size:9px; color:var(--cyan); margin-right:8px; transition:transform 0.2s; opacity:0.7; }
+  .group-row.open td:first-child::before { transform:rotate(90deg); }
+  .sku-row { display:none; background:rgba(0,200,224,0.02); }
+  .sku-row.visible { display:table-row; }
+  .sku-row td { padding:7px 14px 7px 34px; font-size:12px; }
+  .sku-code { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); }
+  .sku-desc { color:var(--muted); font-size:11px; }
+  .obs-ok { font-size:11px; color:var(--pos); }
+  .obs-sem { font-size:11px; color:var(--neg); font-weight:600; }
+  .obs-atencao { font-size:11px; color:var(--warn); font-weight:600; }
+  .obs-reservado { font-size:11px; color:var(--warn); font-weight:600; }
+  .wh-filter { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
+  .wh-btn { padding:7px 18px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:var(--navy2); color:var(--muted); transition:all 0.2s; text-transform:uppercase; letter-spacing:0.5px; }
+  .wh-btn:hover { color:var(--white); border-color:var(--cyan); }
+  .wh-btn.active { background:rgba(0,200,224,0.15); color:var(--cyan); border-color:var(--cyan); }
+  .wh-btn.ftZ.active { background:rgba(96,200,255,0.12); color:#60C8FF; border-color:#60C8FF; }
+  .wh-btn.cwb.active { background:rgba(160,228,255,0.12); color:#A0E4FF; border-color:#A0E4FF; }
+  .wh-btn.man.active { background:rgba(123,255,220,0.12); color:#7BFFDC; border-color:#7BFFDC; }
+  .info-box { padding:12px 16px; background:rgba(0,200,224,0.06); border:1px solid var(--border); border-radius:8px; font-size:12px; color:var(--muted); margin-bottom:24px; line-height:1.7; }
+  .legend { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px; padding:12px 16px; background:var(--navy2); border:1px solid var(--border); border-radius:8px; }
+  .legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
+  .legend-dot { width:8px; height:8px; border-radius:50%; }
+  .clear-btn { padding:5px 12px; border-radius:4px; background:rgba(255,75,110,0.1); border:1px solid rgba(255,75,110,0.3); color:var(--neg); font-size:11px; cursor:pointer; font-family:'Sora',sans-serif; }
+  .clear-btn:hover { background:rgba(255,75,110,0.2); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-block">
+    <div class="logo-icon">⚡</div>
+    <div>
+      <div class="logo-text">LIVOLTEK <span>E-MOBILITY</span></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;">Controle de Estoque EV</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="update-label">Última atualização</div>
+    <div class="update-date">16/03/2026</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('resumo')">Resumo</div>
+  <div class="tab" onclick="showTab('detalhe')">Por Armazém</div>
+  <div class="tab" onclick="showTab('reservas')">Reservas</div>
+  <div class="tab" onclick="showTab('transferencias')">🔄 Transferências</div>
+</div>
+
+<div class="content">
+
+<!-- ===== RESUMO ===== -->
+<div class="section active" id="resumo">
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total Físico (TOTVS)</div>
+      <div class="kpi-value" style="color:var(--pos)">1100</div>
+      <div class="kpi-sub">TOTVS · excl. Livoltek Manaus</div>
+    </div>
+    <div class="kpi-card warn">
+      <div class="kpi-label">Total Reservado</div>
+      <div class="kpi-value">194</div>
+      <div class="kpi-sub">comprometido c/ clientes</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">AC Chargers</div>
+      <div class="kpi-value" style="color:var(--pos)">1451</div>
+      <div class="kpi-sub">911 TOTVS + 540 Livoltek MAN</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">DC Chargers</div>
+      <div class="kpi-value" style="color:var(--pos)">191</div>
+      <div class="kpi-sub">189 TOTVS + 2 Livoltek MAN</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Acessórios</div>
+      <div class="kpi-value">3337</div>
+      <div class="kpi-sub">Kits, Pedestais, DLB</div>
+    </div>
+  </div>
+
+  <div class="sec-title">EV Chargers — Estoque por Grupo (TOTVS) <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:8px">▶ clique no grupo para ver SKUs</span></div>
+  <div class="info-box" style="margin-bottom:16px;font-size:11px">
+    📌 <strong style="color:var(--white)">Estoque TOTVS</strong> = estoque físico real no armazém. &nbsp;|&nbsp; 📌 <strong style="color:var(--white)">Livoltek Manaus</strong> = produtos fabricados em Manaus.
+  </div>
+  <div class="table-wrap">
+    <table id="ev-table">
+      <thead>
+        <tr>
+          <th>Grupo</th>
+          <th class="num wh-ftZ sortable" onclick="sortTable('ev-table',1)">Fortaleza</th>
+          <th class="num wh-cwb sortable" onclick="sortTable('ev-table',2)">Curitiba</th>
+          <th class="num wh-man sortable" onclick="sortTable('ev-table',3)">Manaus</th>
+          <th class="num wh-man2 sortable" onclick="sortTable('ev-table',4)">MAN Livoltek</th>
+          <th class="num sortable" onclick="sortTable('ev-table',5)">Total Físico</th>
+          <th class="num sortable" onclick="sortTable('ev-table',6)">Reserva</th>
+          <th class="num sortable" onclick="sortTable('ev-table',7)">Disponível</th>
+          <th>Observações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- AC 7.3kW -->
+        <tr class="group-row" data-group="ac73" onclick="toggleGroup('ac73')">
+          <td><strong>AC 7.3kW · ATOM</strong></td>
+          <td class="num">300</td><td class="num">372</td><td class="num">58</td><td class="num">—</td>
+          <td class="num pos-val">730</td><td class="num zero-val">—</td><td class="num pos-val">730</td>
+          <td class="obs-ok">✔ Estoque OK</td>
+        </tr>
+        <tr class="sku-row" data-group="ac73"><td><span class="sku-code">A0070230E11R11302</span> <span class="sku-desc">Wi-Fi ETH</span></td><td class="num">291</td><td class="num">372</td><td class="num">58</td><td class="num">—</td><td class="num">721</td><td class="num zero-val">—</td><td class="num pos-val">721</td><td></td></tr>
+        <tr class="sku-row" data-group="ac73"><td><span class="sku-code">A0070230E11R11305</span> <span class="sku-desc">Wi-Fi</span></td><td class="num">9</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">9</td><td class="num zero-val">—</td><td class="num pos-val">9</td><td></td></tr>
+
+        <!-- AC 22kW -->
+        <!-- AC 7.3kW ACE - Livoltek Manaus -->
+        <tr class="group-row" data-group="ac73ace" onclick="toggleGroup('ac73ace')">
+          <td><strong>AC 7.3kW · ACE <span style="font-size:10px;color:var(--muted)">(Livoltek MAN)</span></strong></td>
+          <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">540</td>
+          <td class="num pos-val">540</td><td class="num zero-val">—</td><td class="num pos-val">540</td>
+          <td class="obs-ok">✔ Estoque OK · fabricado localmente</td>
+        </tr>
+        <tr class="sku-row" data-group="ac73ace"><td><span class="sku-code">105589</span> <span class="sku-desc">ACE · Wi-Fi ETH · Bluetooth · Cabo Tipo 2</span></td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">540</td><td class="num">540</td><td class="num zero-val">—</td><td class="num pos-val">540</td><td></td></tr>
+
+        <tr class="group-row" data-group="ac22" onclick="toggleGroup('ac22')">
+          <td><strong>AC 22kW · ATOM</strong></td>
+          <td class="num">37</td><td class="num">144</td><td class="num">—</td><td class="num">—</td>
+          <td class="num pos-val">181</td><td class="num zero-val">—</td><td class="num pos-val">181</td>
+          <td class="obs-ok">✔ Estoque OK</td>
+        </tr>
+        <tr class="sku-row" data-group="ac22"><td><span class="sku-code">A0220400E11R11002</span> <span class="sku-desc">Wi-Fi ETH</span></td><td class="num">—</td><td class="num">10</td><td class="num">—</td><td class="num">—</td><td class="num">10</td><td class="num zero-val">—</td><td class="num pos-val">10</td><td></td></tr>
+        <tr class="sku-row" data-group="ac22"><td><span class="sku-code">A0220400E11R11004</span> <span class="sku-desc">Wi-Fi</span></td><td class="num">37</td><td class="num">134</td><td class="num">—</td><td class="num">—</td><td class="num">171</td><td class="num zero-val">—</td><td class="num pos-val">171</td><td></td></tr>
+
+        <!-- DC 30kW WB -->
+        <tr class="group-row" data-group="dc30wb" onclick="toggleGroup('dc30wb')">
+          <td><strong>DC 30kW · WB</strong></td>
+          <td class="num">9</td><td class="num">31</td><td class="num">—</td><td class="num">—</td>
+          <td class="num pos-val">40</td><td class="num warn-val">40</td><td class="num zero-val">0</td>
+          <td class="obs-reservado">🟡 100% reservado · sem margem</td>
+        </tr>
+        <tr class="sku-row" data-group="dc30wb"><td><span class="sku-code">D0300380E1EYW11001</span> <span class="sku-desc">WB · 1xCCS2 · 4G</span></td><td class="num">9</td><td class="num">31</td><td class="num">—</td><td class="num">—</td><td class="num">40</td><td class="num warn-val">40</td><td class="num zero-val">0</td><td></td></tr>
+
+        <!-- DC 30kW MC -->
+        <tr class="group-row" data-group="dc30mc" onclick="toggleGroup('dc30mc')">
+          <td><strong>DC 30kW · MC</strong></td>
+          <td class="num">—</td><td class="num">22</td><td class="num">—</td><td class="num">—</td>
+          <td class="num pos-val">22</td><td class="num warn-val">38</td><td class="num neg-val">-16</td>
+          <td class="obs-sem">🔴 Sem estoque</td>
+        </tr>
+        <tr class="sku-row" data-group="dc30mc"><td><span class="sku-code">C03010E1EAFDR11003</span> <span class="sku-desc">MC · 1xCCS2 · PPOS</span></td><td class="num">—</td><td class="num">22</td><td class="num">—</td><td class="num">—</td><td class="num">22</td><td class="num warn-val">38</td><td class="num neg-val">-16</td><td></td></tr>
+
+        <!-- DC 40kW MC -->
+        <tr class="group-row" data-group="dc40" onclick="toggleGroup('dc40')">
+          <td><strong>DC 40kW · MC</strong></td>
+          <td class="num">—</td><td class="num">10</td><td class="num">—</td><td class="num">—</td>
+          <td class="num pos-val">10</td><td class="num warn-val">10</td><td class="num zero-val">0</td>
+          <td class="obs-reservado">🟡 100% reservado · sem margem</td>
+        </tr>
+        <tr class="sku-row" data-group="dc40"><td><span class="sku-code">C04010E2EAFER11003</span> <span class="sku-desc">MC · 2xCCS2 · PPOS</span></td><td class="num">—</td><td class="num">10</td><td class="num">—</td><td class="num">—</td><td class="num">10</td><td class="num warn-val">10</td><td class="num zero-val">0</td><td></td></tr>
+
+        <!-- DC 60kW MF -->
+        <tr class="group-row" data-group="dc60mf" onclick="toggleGroup('dc60mf')">
+          <td><strong>DC 60kW · MF</strong></td>
+          <td class="num">—</td><td class="num">1</td><td class="num">—</td><td class="num">—</td>
+          <td class="num pos-val">1</td><td class="num warn-val">25</td><td class="num neg-val">-24</td>
+          <td class="obs-sem">🔴 Sem estoque</td>
+        </tr>
+        <tr class="sku-row" data-group="dc60mf"><td><span class="sku-code">M0601000E2EYR11001</span> <span class="sku-desc">MF · 2xCCS2 · 4G</span></td><td class="num">—</td><td class="num">1</td><td class="num">—</td><td class="num">—</td><td class="num">1</td><td class="num warn-val">25</td><td class="num neg-val">-24</td><td></td></tr>
+
+        <!-- DC 60kW MC -->
+        <tr class="group-row" data-group="dc60mc" onclick="toggleGroup('dc60mc')">
+          <td><strong>DC 60kW · MC</strong></td>
+          <td class="num">—</td><td class="num">18</td><td class="num">—</td><td class="num">—</td>
+          <td class="num pos-val">18</td><td class="num warn-val">17</td><td class="num pos-val">1</td>
+          <td class="obs-ok">✔ Cobre reserva · sobra 1</td>
+        </tr>
+        <tr class="sku-row" data-group="dc60mc"><td><span class="sku-code">C06010E2EAFGR11003</span> <span class="sku-desc">MC · 2xCCS2 · PPOS</span></td><td class="num">—</td><td class="num">18</td><td class="num">—</td><td class="num">—</td><td class="num">18</td><td class="num warn-val">17</td><td class="num pos-val">1</td><td></td></tr>
+
+        <!-- DC 120kW MF -->
+        <tr class="group-row" data-group="dc120" onclick="toggleGroup('dc120')">
+          <td><strong>DC 120kW · MF</strong></td>
+          <td class="num">4</td><td class="num">60</td><td class="num">—</td><td class="num">—</td>
+          <td class="num pos-val">64</td><td class="num warn-val">47</td><td class="num pos-val">17</td>
+          <td class="obs-ok">✔ Cobre reserva · sobra 17</td>
+        </tr>
+        <tr class="sku-row" data-group="dc120"><td><span class="sku-code">M1201000E2EYR11001</span> <span class="sku-desc">MF · 2xCCS2 · 4G</span></td><td class="num">4</td><td class="num">60</td><td class="num">—</td><td class="num">—</td><td class="num">64</td><td class="num warn-val">47</td><td class="num pos-val">17</td><td></td></tr>
+
+        <!-- DC 180kW MF -->
+        <tr class="group-row" data-group="dc180" onclick="toggleGroup('dc180')">
+          <td><strong>DC 180kW · MF</strong></td>
+          <td class="num">—</td><td class="num">18</td><td class="num">—</td><td class="num">2</td>
+          <td class="num pos-val">20</td><td class="num warn-val">16</td><td class="num pos-val">4</td>
+          <td class="obs-ok">✔ Cobre reserva · sobra 2</td>
+        </tr>
+        <tr class="sku-row" data-group="dc180"><td><span class="sku-code">M18010E2EYFIR11003</span> <span class="sku-desc">Motion Fast · 2xCCS2</span></td><td class="num">—</td><td class="num">18</td><td class="num">—</td><td class="num">2</td><td class="num">20</td><td class="num warn-val">16</td><td class="num pos-val">4</td><td></td></tr>
+
+        <!-- DC 240kW MF -->
+        <tr class="group-row" data-group="dc240" onclick="toggleGroup('dc240')">
+          <td><strong>DC 240kW · MF</strong></td>
+          <td class="num">—</td><td class="num">16</td><td class="num">—</td><td class="num">—</td>
+          <td class="num pos-val">16</td><td class="num warn-val">1</td><td class="num pos-val">15</td>
+          <td class="obs-ok">✔ Cobre reserva · sobra 15</td>
+        </tr>
+        <tr class="sku-row" data-group="dc240"><td><span class="sku-code">M24010E2EYGIR11003</span> <span class="sku-desc">Motion Fast · 2xCCS2</span></td><td class="num">—</td><td class="num">16</td><td class="num">—</td><td class="num">—</td><td class="num">16</td><td class="num warn-val">1</td><td class="num pos-val">15</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title">Charger Accessories <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:8px">▶ clique no grupo para ver SKUs</span></div>
+  <div class="table-wrap">
+    <table id="acc-table">
+      <thead>
+        <tr>
+          <th>Grupo</th>
+          <th class="num wh-ftZ sortable" onclick="sortTable('acc-table',1)">FTZ</th>
+          <th class="num wh-cwb sortable" onclick="sortTable('acc-table',2)">CWB</th>
+          <th class="num wh-man sortable" onclick="sortTable('acc-table',3)">MAN</th>
+          <th class="num sortable" onclick="sortTable('acc-table',4)">Total</th>
+          <th class="num sortable" onclick="sortTable('acc-table',5)">Reserva</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="group-row" data-group="wifi" onclick="toggleGroup('wifi')"><td><strong>Kit Wi-Fi</strong></td><td class="num">—</td><td class="num">3016</td><td class="num">—</td><td class="num pos-val">3016</td><td class="num zero-val">—</td></tr>
+        <tr class="sku-row" data-group="wifi"><td><span class="sku-code">2140104220</span> <span class="sku-desc">Antena Wi-Fi</span></td><td class="num">—</td><td class="num">1508</td><td class="num">—</td><td class="num">1508</td><td class="num zero-val">—</td></tr>
+        <tr class="sku-row" data-group="wifi"><td><span class="sku-code">525010020008</span> <span class="sku-desc">Módulo FC41</span></td><td class="num">—</td><td class="num">1508</td><td class="num">—</td><td class="num">1508</td><td class="num zero-val">—</td></tr>
+        <tr class="group-row" data-group="kit4g" onclick="toggleGroup('kit4g')"><td><strong>Kit 4G</strong></td><td class="num">—</td><td class="num">224</td><td class="num">—</td><td class="num pos-val">224</td><td class="num zero-val">—</td></tr>
+        <tr class="sku-row" data-group="kit4g"><td><span class="sku-code">2140104000</span> <span class="sku-desc">Antena 4G</span></td><td class="num">—</td><td class="num">110</td><td class="num">—</td><td class="num">110</td><td class="num zero-val">—</td></tr>
+        <tr class="sku-row" data-group="kit4g"><td><span class="sku-code">525010021005</span> <span class="sku-desc">Módulo 4G</span></td><td class="num">—</td><td class="num">110</td><td class="num">—</td><td class="num">110</td><td class="num zero-val">—</td></tr>
+        <tr class="sku-row" data-group="kit4g"><td><span class="sku-code">2140103890</span> <span class="sku-desc">Antena 4G Sólida</span></td><td class="num">—</td><td class="num">4</td><td class="num">—</td><td class="num">4</td><td class="num zero-val">—</td></tr>
+        <tr class="group-row" data-group="rfid" onclick="toggleGroup('rfid')"><td><strong>Kit RFID</strong></td><td class="num">—</td><td class="num">64</td><td class="num">—</td><td class="num pos-val">64</td><td class="num zero-val">—</td></tr>
+        <tr class="sku-row" data-group="rfid"><td><span class="sku-code">525030024002</span> <span class="sku-desc">Sensor RFID</span></td><td class="num">—</td><td class="num">56</td><td class="num">—</td><td class="num">56</td><td class="num zero-val">—</td></tr>
+        <tr class="sku-row" data-group="rfid"><td><span class="sku-code">2080501810</span> <span class="sku-desc">Sensor RFID</span></td><td class="num">—</td><td class="num">8</td><td class="num">—</td><td class="num">8</td><td class="num zero-val">—</td></tr>
+        <tr class="group-row" data-group="pedestal" onclick="toggleGroup('pedestal')"><td><strong>Pedestal</strong></td><td class="num">17</td><td class="num wh-cwb warn-val">10 ⚠</td><td class="num">—</td><td class="num pos-val">27</td><td class="num zero-val">—</td></tr>
+        <tr class="sku-row" data-group="pedestal"><td><span class="sku-code">9121500036</span> <span class="sku-desc">Pedestal CA · Aço</span></td><td class="num">17</td><td class="num warn-val">10 ⚠</td><td class="num">—</td><td class="num">27</td><td class="num zero-val">—</td></tr>
+        <tr class="group-row" data-group="dlb" onclick="toggleGroup('dlb')"><td><strong>DLB EV Hub</strong></td><td class="num">—</td><td class="num">6</td><td class="num">—</td><td class="num pos-val">6</td><td class="num zero-val">—</td></tr>
+        <tr class="sku-row" data-group="dlb"><td><span class="sku-code">LHECCHR11001</span> <span class="sku-desc">DLB EV Hub</span></td><td class="num">—</td><td class="num">6</td><td class="num">—</td><td class="num">6</td><td class="num zero-val">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title">⚠️ Alertas de Estoque</div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--neg)"></div> Reserva supera estoque físico</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--warn)"></div> 100% reservado · sem margem</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--warn)"></div> No limite mínimo</div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Produto</th><th class="num">Físico (TOTVS)</th><th class="num">Reserva</th><th class="num">Disponível</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>DC 30kW · MC</strong></td><td class="num pos-val">22</td><td class="num warn-val">38</td><td class="num neg-val">-16</td><td><span class="badge" style="background:rgba(255,75,110,0.15);color:var(--neg)">Sem estoque</span></td></tr>
+        <tr><td><strong>DC 60kW · MF</strong></td><td class="num pos-val">1</td><td class="num warn-val">25</td><td class="num neg-val">-24</td><td><span class="badge" style="background:rgba(255,75,110,0.15);color:var(--neg)">Sem estoque</span></td></tr>
+        <tr><td><strong>DC 30kW · WB</strong></td><td class="num pos-val">40</td><td class="num warn-val">40</td><td class="num zero-val">0</td><td><span class="badge" style="background:rgba(255,179,71,0.15);color:var(--warn)">100% Reservado</span></td></tr>
+        <tr><td><strong>DC 40kW · MC</strong></td><td class="num pos-val">10</td><td class="num warn-val">10</td><td class="num zero-val">0</td><td><span class="badge" style="background:rgba(255,179,71,0.15);color:var(--warn)">100% Reservado</span></td></tr>
+        <tr style="background:rgba(255,179,71,0.05)"><td><strong>Pedestal CA · CWB</strong></td><td class="num warn-val">10</td><td class="num zero-val">—</td><td class="num warn-val">10</td><td><span class="badge" style="background:rgba(255,179,71,0.2);color:var(--warn)">⚠ No Limite Mínimo</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== POR ARMAZÉM ===== -->
+<div class="section" id="detalhe">
+  <div class="wh-filter">
+    <button class="wh-btn active" onclick="filterWarehouse('ALL')">Todos</button>
+    <button class="wh-btn ftZ" onclick="filterWarehouse('FTZ')">🟦 Fortaleza (FTZ)</button>
+    <button class="wh-btn cwb" onclick="filterWarehouse('CWB')">🟦 Curitiba (CWB)</button>
+    <button class="wh-btn man" onclick="filterWarehouse('MAN')">🟦 Manaus</button>
+    <button class="wh-btn man" onclick="filterWarehouse('MAN2')">🟦 Manaus Livoltek</button>
+  </div>
+
+  <div class="wh-section" data-wh="FTZ">
+    <div class="sec-title" style="color:#60C8FF">Fortaleza (FTZ)</div>
+    <div class="table-wrap"><table><thead><tr><th>BOM ID</th><th>Produto</th><th class="num">Estoque</th><th class="num">Reserva</th><th class="num">Disponível</th><th>Observações</th></tr></thead><tbody>
+      <tr><td class="sku-code">A0070230E11R11302</td><td>AC 7.3kW · ATOM · Wi-Fi ETH</td><td class="num">291</td><td class="num zero-val">—</td><td class="num pos-val">291</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">A0070230E11R11305</td><td>AC 7.3kW · ATOM · Wi-Fi</td><td class="num">9</td><td class="num zero-val">—</td><td class="num pos-val">9</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">A0220400E11R11004</td><td>AC 22kW · ATOM · Wi-Fi</td><td class="num">37</td><td class="num zero-val">—</td><td class="num pos-val">37</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">D0300380E1EYW11001</td><td>DC 30kW · WB · 1xCCS2</td><td class="num">9</td><td class="num warn-val">40*</td><td class="num zero-val">0</td><td class="obs-reservado">🟡 100% reservado (reserva total 40 un. FTZ+CWB)</td></tr>
+      <tr><td class="sku-code">M1201000E2EYR11001</td><td>DC 120kW · MF · 2xCCS2</td><td class="num">4</td><td class="num warn-val">47*</td><td class="num pos-val">17*</td><td class="obs-ok">✔ Cobre reserva (total FTZ+CWB=64 · reserva 47)</td></tr>
+      <tr><td class="sku-code">9121500036</td><td>Pedestal CA · ATOM · Aço</td><td class="num">17</td><td class="num zero-val">—</td><td class="num pos-val">17</td><td class="obs-ok">✔ Estoque OK</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <div class="wh-section" data-wh="CWB">
+    <div class="sec-title" style="color:#A0E4FF">Curitiba (CWB)</div>
+    <div class="table-wrap"><table><thead><tr><th>BOM ID</th><th>Produto</th><th class="num">Estoque</th><th class="num">Reserva</th><th class="num">Disponível</th><th>Observações</th></tr></thead><tbody>
+      <tr><td class="sku-code">A0070230E11R11302</td><td>AC 7.3kW · ATOM · Wi-Fi ETH</td><td class="num">372</td><td class="num zero-val">—</td><td class="num pos-val">372</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">A0220400E11R11002</td><td>AC 22kW · ATOM · Wi-Fi ETH</td><td class="num">10</td><td class="num zero-val">—</td><td class="num pos-val">10</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">A0220400E11R11004</td><td>AC 22kW · ATOM · Wi-Fi</td><td class="num">134</td><td class="num zero-val">—</td><td class="num pos-val">134</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">D0300380E1EYW11001</td><td>DC 30kW · WB · 1xCCS2</td><td class="num">31</td><td class="num warn-val">40*</td><td class="num zero-val">0</td><td class="obs-reservado">🟡 100% reservado (reserva total 40 un. FTZ+CWB)</td></tr>
+      <tr><td class="sku-code">C03010E1EAFDR11003</td><td>DC 30kW · MC · 1xCCS2 · PPOS</td><td class="num">22</td><td class="num warn-val">38</td><td class="num neg-val">-16</td><td class="obs-sem">🔴 Sem estoque</td></tr>
+      <tr><td class="sku-code">C04010E2EAFER11003</td><td>DC 40kW · MC · 2xCCS2 · PPOS</td><td class="num">10</td><td class="num warn-val">10</td><td class="num zero-val">0</td><td class="obs-reservado">🟡 100% reservado · sem margem</td></tr>
+      <tr><td class="sku-code">M0601000E2EYR11001</td><td>DC 60kW · MF · 2xCCS2</td><td class="num">1</td><td class="num warn-val">25</td><td class="num neg-val">-24</td><td class="obs-sem">🔴 Sem estoque</td></tr>
+      <tr><td class="sku-code">C06010E2EAFGR11003</td><td>DC 60kW · MC · 2xCCS2 · PPOS</td><td class="num">18</td><td class="num warn-val">17</td><td class="num pos-val">1</td><td class="obs-ok">✔ Cobre reserva · sobra 1</td></tr>
+      <tr><td class="sku-code">M1201000E2EYR11001</td><td>DC 120kW · MF · 2xCCS2</td><td class="num">60</td><td class="num warn-val">47*</td><td class="num pos-val">17*</td><td class="obs-ok">✔ Cobre reserva (total FTZ+CWB=64 · reserva 47)</td></tr>
+      <tr><td class="sku-code">M18010E2EYFIR11003</td><td>DC 180kW · Motion Fast</td><td class="num">18</td><td class="num warn-val">16</td><td class="num pos-val">2</td><td class="obs-ok">✔ Cobre reserva · sobra 2</td></tr>
+      <tr><td class="sku-code">M24010E2EYGIR11003</td><td>DC 240kW · Motion Fast</td><td class="num">16</td><td class="num warn-val">1</td><td class="num pos-val">15</td><td class="obs-ok">✔ Cobre reserva · sobra 15</td></tr>
+      <tr><td class="sku-code">2140104220</td><td>Kit Wi-Fi · Antena Wi-Fi</td><td class="num">1508</td><td class="num zero-val">—</td><td class="num pos-val">1508</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">525010020008</td><td>Kit Wi-Fi · Módulo FC41</td><td class="num">1508</td><td class="num zero-val">—</td><td class="num pos-val">1508</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">2140104000</td><td>Kit 4G · Antena 4G</td><td class="num">110</td><td class="num zero-val">—</td><td class="num pos-val">110</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">525010021005</td><td>Kit 4G · Módulo 4G</td><td class="num">110</td><td class="num zero-val">—</td><td class="num pos-val">110</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">2140103890</td><td>Kit 4G · Antena Sólida</td><td class="num">4</td><td class="num zero-val">—</td><td class="num pos-val">4</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">525030024002</td><td>Kit RFID · Sensor RFID</td><td class="num">56</td><td class="num zero-val">—</td><td class="num pos-val">56</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">2080501810</td><td>Kit RFID · Sensor RFID</td><td class="num">8</td><td class="num zero-val">—</td><td class="num pos-val">8</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">LHECCHR11001</td><td>DLB EV Hub</td><td class="num">6</td><td class="num zero-val">—</td><td class="num pos-val">6</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr style="background:rgba(255,179,71,0.05)"><td class="sku-code">9121500036</td><td>Pedestal CA · ATOM · Aço</td><td class="num">10</td><td class="num zero-val">—</td><td class="num warn-val">10</td><td class="obs-atencao">⚠ No limite mínimo (mín. 10 un.)</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <div class="wh-section" data-wh="MAN">
+    <div class="sec-title" style="color:#7BFFDC">Manaus (MAN)</div>
+    <div class="table-wrap"><table><thead><tr><th>BOM ID</th><th>Produto</th><th class="num">Estoque</th><th class="num">Reserva</th><th class="num">Disponível</th><th>Observações</th></tr></thead><tbody>
+      <tr><td class="sku-code">A0070230E11R11302</td><td>AC 7.3kW · ATOM · Wi-Fi ETH</td><td class="num">58</td><td class="num zero-val">—</td><td class="num pos-val">58</td><td class="obs-ok">✔ Estoque OK</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <div class="wh-section" data-wh="MAN2">
+    <div class="sec-title" style="color:#7BFFDC">Manaus — Livoltek Manaus (TOPMANAGER)</div>
+    <div class="table-wrap"><table><thead><tr><th>Código</th><th>Produto</th><th class="num">Qtd</th><th>Observações</th></tr></thead><tbody>
+      <tr><td class="sku-code">105589</td><td>AC 7.3kW · ACE · Wi-Fi ETH (fabricado localmente)</td><td class="num pos-val">540</td><td class="obs-ok">✔ Estoque OK</td></tr>
+      <tr><td class="sku-code">108190</td><td>DC 180kW · Motion Fast · 2xCCS2</td><td class="num pos-val">2</td><td class="obs-ok">✔ Estoque OK</td></tr>
+    </tbody></table></div>
+  </div>
+  <p style="font-size:11px;color:var(--muted);margin-top:-20px">* Reserva e disponível calculados sobre o total FTZ+CWB combinado.</p>
+</div>
+
+<!-- ===== RESERVAS ===== -->
+<div class="section" id="reservas">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+    <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Filtrar por produto:</span>
+    <select id="f-codigo" onchange="applyResFilter()" style="background:var(--navy2);border:1px solid var(--border);color:var(--white);padding:7px 14px;border-radius:6px;font-size:12px;font-family:'Sora',sans-serif;cursor:pointer;outline:none;min-width:200px">
+      <option value="ALL">Todos os produtos</option>
+      <option value="DC 30kW · WB">DC 30kW · WB</option>
+      <option value="DC 30kW · MC">DC 30kW · MC</option>
+      <option value="DC 40kW · MC">DC 40kW · MC</option>
+      <option value="DC 60kW · MF">DC 60kW · MF</option>
+      <option value="DC 60kW · MC">DC 60kW · MC</option>
+      <option value="DC 120kW · MF">DC 120kW · MF</option>
+      <option value="DC 180kW · MF">DC 180kW · MF</option>
+      <option value="DC 240kW · MF">DC 240kW · MF</option>
+    </select>
+    <span id="res-count" style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;"></span>
+  </div>
+
+  <div class="sec-title">Reservas — EV Chargers</div>
+  <div class="table-wrap">
+    <table id="res-table">
+      <thead>
+        <tr>
+          <th class="sortable" onclick="sortTable('res-table',0)">Cliente</th>
+          <th class="sortable" onclick="sortTable('res-table',1)">Responsável</th>
+          <th class="sortable" onclick="sortTable('res-table',2)">Diretoria</th>
+          <th class="sortable" onclick="sortTable('res-table',3)">Produto</th>
+          <th class="sortable" onclick="sortTable('res-table',4)">Localização</th>
+          <th class="num sortable" onclick="sortTable('res-table',6)">Qtd</th>
+        </tr>
+      </thead>
+      <tbody id="res-body">
+        <tr><td><strong>Energize-C</strong></td><td style="color:var(--muted);font-size:12px">Mateus Armando</td><td><span class="badge" style="background:rgba(0,200,224,0.2);color:var(--cyan);font-weight:700">DISTRIBUTION</span></td><td>DC 60kW · MF</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">10</td></tr>
+        <tr><td><strong>GWM</strong></td><td style="color:var(--muted);font-size:12px">Vinicio</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 30kW · MC</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">12</td></tr>
+        <tr><td><strong>GWM</strong></td><td style="color:var(--muted);font-size:12px">Vinicio</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 60kW · MC</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">15</td></tr>
+        <tr><td><strong>GWM</strong></td><td style="color:var(--muted);font-size:12px">Vinicio</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 120kW · MF</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">3</td></tr>
+        <tr><td><strong>Renault</strong></td><td style="color:var(--muted);font-size:12px">Vinicio</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 30kW · WB</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">10</td></tr>
+        <tr><td><strong>Geely</strong></td><td style="color:var(--muted);font-size:12px">Vinicio</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 30kW · MC</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">20</td></tr>
+        <tr><td><strong>Greenv</strong></td><td style="color:var(--muted);font-size:12px">Vinicio</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 30kW · WB</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">30</td></tr>
+        <tr><td><strong>Greenv</strong></td><td style="color:var(--muted);font-size:12px">Vinicio</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 60kW · MF</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">15</td></tr>
+        <tr><td><strong>Projetos</strong></td><td style="color:var(--muted);font-size:12px">Bruno Reis</td><td><span class="badge" style="background:rgba(255,179,71,0.15);color:var(--warn)">PROJECTS E-MOBILITY</span></td><td>DC 180kW · MF</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">16</td></tr>
+        <tr><td><strong>Projetos</strong></td><td style="color:var(--muted);font-size:12px">Bruno Reis</td><td><span class="badge" style="background:rgba(255,179,71,0.15);color:var(--warn)">PROJECTS E-MOBILITY</span></td><td>DC 240kW · MF</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">1</td></tr>
+        <tr><td><strong>CIA CHARGE</strong></td><td style="color:var(--muted);font-size:12px">Anna Junkes</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 120kW · MF</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">12</td></tr>
+        <tr><td><strong>EMOB</strong></td><td style="color:var(--muted);font-size:12px">Anna Junkes</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 30kW · MC</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">6</td></tr>
+        <tr><td><strong>EMOB</strong></td><td style="color:var(--muted);font-size:12px">Anna Junkes</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 120kW · MF</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">7</td></tr>
+        <tr><td><strong>REDE VOLT</strong></td><td style="color:var(--muted);font-size:12px">Anna Junkes</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 120kW · MF</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">10</td></tr>
+        <tr><td><strong>HDT</strong></td><td style="color:var(--muted);font-size:12px">Vinicio</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 60kW · MC</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">2</td></tr>
+        <tr><td><strong>HDT</strong></td><td style="color:var(--muted);font-size:12px">Vinicio</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 40kW · MC</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">1</td></tr>
+        <tr><td><strong>HDT</strong></td><td style="color:var(--muted);font-size:12px">Vinicio</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 120kW · MF</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">10</td></tr>
+        <tr><td><strong>WEVOLTZ</strong></td><td style="color:var(--muted);font-size:12px">Anna Junkes</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 40kW · MC</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">9</td></tr>
+        <tr><td><strong>YELLOT MOB</strong></td><td style="color:var(--muted);font-size:12px">Anna Junkes</td><td><span class="badge badge-ev">MOBILITY</span></td><td>DC 120kW · MF</td><td style="font-size:11px;color:var(--muted)">Curitiba</td><td class="num warn-val">5</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== TRANSFERÊNCIAS ===== -->
+<div class="section" id="transferencias">
+  <div class="info-box">
+    <strong style="color:var(--white)">🚨 Reposição da China (SLA ~6 meses)</strong> &nbsp;·&nbsp;
+    <span style="color:var(--muted)">Transferência interna: <strong style="color:var(--cyan)">FTZ ↔ CWB</strong> · Manaus: somente AC.</span>
+  </div>
+
+  <div class="sec-title" style="color:var(--neg)">🚨 Requer PO da China — Reserva supera estoque físico</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Produto</th><th>SKU</th>
+          <th class="num wh-ftZ">Fortaleza</th>
+          <th class="num wh-cwb">Curitiba</th>
+          <th class="num">Total Físico</th>
+          <th class="num">Reserva</th>
+          <th class="num neg-val">Déficit</th>
+          <th style="color:var(--warn)">Previsão chegada</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>DC 30kW · MC</strong></td><td class="sku-code">C03010E1EAFDR11003</td>
+          <td class="num wh-ftZ zero-val">0</td><td class="num">22</td>
+          <td class="num">22</td><td class="num warn-val">38</td><td class="num neg-val">-16</td>
+          <td style="font-size:11px;color:var(--warn)" class="arrival-date"></td>
+        </tr>
+        <tr>
+          <td><strong>DC 60kW · MF</strong></td><td class="sku-code">M0601000E2EYR11001</td>
+          <td class="num wh-ftZ zero-val">0</td><td class="num">1</td>
+          <td class="num">1</td><td class="num warn-val">25</td><td class="num neg-val">-24</td>
+          <td style="font-size:11px;color:var(--warn)" class="arrival-date"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title" style="color:var(--warn)">🟡 100% Reservado — Transferência necessária para um único local</div>
+  <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Estoque existe mas está dividido entre FTZ e CWB. Concentrar em um único armazém para atender as reservas.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Produto</th><th>SKU</th>
+          <th class="num wh-ftZ">Fortaleza</th>
+          <th class="num wh-cwb">Curitiba</th>
+          <th class="num">Reserva</th>
+          <th>Sugestão</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>DC 30kW · WB</strong></td><td class="sku-code">D0300380E1EYW11001</td>
+          <td class="num">9</td><td class="num">31</td>
+          <td class="num warn-val">40</td>
+          <td><span class="badge" style="background:rgba(255,179,71,0.15);color:var(--warn)">Transferir FTZ 9 → CWB · concentrar 40 em CWB</span></td>
+        </tr>
+        <tr>
+          <td><strong>DC 120kW · MF</strong></td><td class="sku-code">M1201000E2EYR11001</td>
+          <td class="num">4</td><td class="num">60</td>
+          <td class="num warn-val">47</td>
+          <td><span class="badge" style="background:rgba(0,200,224,0.15);color:var(--cyan)">Transferir FTZ 4 → CWB · concentrar 64 em CWB</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</div>
+</body>
+</html>
