@@ -76,9 +76,25 @@ function extractState(addr){
 }
 
 function parseLocal(s){if(!s)return null;const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);}
-function addDays(s,n){if(!s||n==null)return null;const d=parseLocal(s);d.setDate(d.getDate()+n);return d;}
+// Feriados nacionais 2026
+const FERIADOS=new Set(["2026-01-01","2026-02-16","2026-02-17","2026-04-03","2026-04-21",
+  "2026-05-01","2026-06-04","2026-09-07","2026-10-12","2026-11-02","2026-11-15","2026-12-25"]);
+function isUtil(d){const dw=d.getDay();if(dw===0||dw===6)return false;
+  const k=d.toISOString().split("T")[0];return!FERIADOS.has(k);}
+function addDiasUteis(s,n){if(!s||n==null)return null;
+  const d=parseLocal(s);let count=0;
+  while(count<n){d.setDate(d.getDate()+1);if(isUtil(d))count++;}
+  return d;}
+function diffDiasUteis(d1,d2){
+  // positive = d2 is after d1, negative = d2 is before d1
+  if(!d1||!d2)return null;
+  let a=new Date(Math.min(d1,d2)),b=new Date(Math.max(d1,d2)),count=0;
+  const cur=new Date(a);cur.setDate(cur.getDate()+1);
+  while(cur<=b){if(isUtil(cur))count++;cur.setDate(cur.getDate()+1);}
+  return d1<=d2?count:-count;}
+function addDays(s,n){return addDiasUteis(s,n);}
 function fmt(d){if(!d)return"—";return(typeof d==="string"?parseLocal(d):d).toLocaleDateString("pt-BR");}
-function diff(d){if(!d)return null;const dt=typeof d==="string"?parseLocal(d):d;return Math.floor((dt-TODAY)/86400000);}
+function diff(d){if(!d)return null;const dt=typeof d==="string"?parseLocal(d):d;return diffDiasUteis(TODAY,dt);}
 function mon(date){const d=new Date(date);d.setHours(0,0,0,0);d.setDate(d.getDate()-(d.getDay()===0?6:d.getDay()-1));return d;}
 function addD(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
 
@@ -227,8 +243,8 @@ const RAW=[
   {pedido:"LIVMDIM0203074",cliente:"DIMAS GWM COMERCIO AUTOMOVEIS",diretoria:"MOBILITY",vendedor:"BEATRIZ SALES",local_entrega:"Florianópolis - SC",origem:"CWB",frete_tipo:"CIF",valor:22515,rec_sm:"2026-02-27"},
   {pedido:"LIVMMUL0203701",cliente:"MULT CONSTRUCOES LTDA",diretoria:"MOBILITY",vendedor:"KARINY MACIEL",local_entrega:"SÃO LUIS - MARANHÃO",origem:"CWB",frete_tipo:"CIF",valor:140000,rec_sm:"2026-02-27"},
   {pedido:"LIVMPOW0203363",cliente:"POWERUP ENERGIA E PROJETOS",diretoria:"MOBILITY",vendedor:"ANNA JULIA",local_entrega:"Rio de Janeiro - RJ",origem:"CWB",frete_tipo:"CIF",valor:800,rec_sm:"2026-03-02"},
-  {pedido:"LIVHTRI0303491",cliente:"TRITEC CENTER",diretoria:"HEXING CHILE",vendedor:"MINGMIN ZHOU",local_entrega:"",origem:"FTZ",frete_tipo:"FOB",valor:5806,rec_sm:"2026-03-03"},
-  {pedido:"LIVHTRI0403747",cliente:"TRITEC CENTER",diretoria:"HEXING CHILE",vendedor:"MINGMIN ZHOU",local_entrega:"",origem:"FTZ",frete_tipo:"FOB",valor:43966,rec_sm:"2026-03-03"},
+  {pedido:"LIVHTRI0303491",cliente:"TRITEC CENTER",diretoria:"HEXING CHILE",vendedor:"Camila Mendoza",local_entrega:"",origem:"FTZ",frete_tipo:"FOB",valor:5806,rec_sm:"2026-03-03"},
+  {pedido:"LIVHTRI0403747",cliente:"TRITEC CENTER",diretoria:"HEXING CHILE",vendedor:"Camila Mendoza",local_entrega:"",origem:"FTZ",frete_tipo:"FOB",valor:43966,rec_sm:"2026-03-03"},
   {pedido:"LIVMENZ0403327",cliente:"ENZO SELECT MOTORS LTDA",diretoria:"MOBILITY",vendedor:"BEATRIZ SALES",local_entrega:"",origem:"CWB",frete_tipo:"CIF",valor:0,rec_sm:"2026-03-03"},
   {pedido:"LIVMEMO0701137",cliente:"EMOB SOLUCOES - SANTO ANDRÉ",diretoria:"MOBILITY",vendedor:"ANNA JULIA",local_entrega:"Santo André - SP",origem:"CWB",frete_tipo:"CIF",valor:28500,rec_sm:"2026-03-05"},
   {pedido:"LIVMEMO0701138",cliente:"EMOB SOLUCOES - RAPOSO TAVARES",diretoria:"MOBILITY",vendedor:"ANNA JULIA",local_entrega:"São Paulo - SP",origem:"CWB",frete_tipo:"CIF",valor:28500,rec_sm:"2026-03-05"},
@@ -253,8 +269,7 @@ function processOrder(o){
   const receive_pd = fu?.receive_pd || null;
   const nf       = fu?.nf       || null;
   const rec_sm   = o.rec_sm || null;
-  const dias_sm  = (rec_sm && receive_pd)
-    ? Math.round((parseLocal(receive_pd)-parseLocal(rec_sm))/86400000) : null;
+  const dias_sm  = (rec_sm && receive_pd) ? diffDiasUteis(parseLocal(rec_sm),parseLocal(receive_pd)) : null;
   const has_nf   = !!nf;
   const dt_nf    = fu?.inv_date || null;
   const shipping = fu?.shipping || null;
@@ -413,7 +428,7 @@ function App(){
         <div style={{width:5,height:24,background:"#06b6d4",borderRadius:3}}/>
         <div>
           <div style={{color:"#fff",fontWeight:700,fontSize:14}}>Livoltek — Acompanhamento de Entregas 2026</div>
-          <div style={{color:"#64748b",fontSize:10}}>Hoje: {fmt(TODAY)} · Prazos em dias corridos · NF e datas: Follow-up Solar (aba 2025, PO TOTVS) · Previsão = Shipping (ou Data NF) + prazo frete</div>
+          <div style={{color:"#64748b",fontSize:10}}>Hoje: {fmt(TODAY)} · Prazos em dias úteis (seg–sex, feriados nacionais excluídos) · NF e datas: Follow-up Solar (aba 2025, PO TOTVS) · Previsão = Shipping (ou Data NF) + prazo frete</div>
         </div>
       </div>
 
@@ -534,7 +549,7 @@ function App(){
                         {o.entregue
                           ? (() => {
                               if(!o.dataEntregue||!o.previsao) return <span style={{color:"#059669",fontSize:11}}>✓</span>;
-                              const dp=Math.round((parseLocal(o.dataEntregue)-parseLocal(o.previsao))/86400000);
+                              const dp=diffDiasUteis(parseLocal(o.previsao),parseLocal(o.dataEntregue));
                               return dp<=0
                                 ? <span style={{fontWeight:700,fontSize:10,padding:"1px 5px",borderRadius:5,background:"#f0fdf4",color:"#166534"}}>✓ {dp===0?"no prazo":`${Math.abs(dp)}d antes`}</span>
                                 : <span style={{fontWeight:700,fontSize:10,padding:"1px 5px",borderRadius:5,background:"#fef2f2",color:"#991b1b"}}>+{dp}d atraso</span>;
