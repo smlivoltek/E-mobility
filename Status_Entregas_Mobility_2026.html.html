@@ -53,9 +53,10 @@ input.fsearch{padding:3px 8px;border-radius:6px;border:1px solid #e2e8f0;font-si
 <script type="text/babel">
 const {useState,useMemo,useEffect}=React;
 
-// Data atual no fuso de São Paulo (GMT-3)
-const _now = new Date(new Date().toLocaleString("en-US",{timeZone:"America/Sao_Paulo"}));
-const TODAY = new Date(_now.getFullYear(), _now.getMonth(), _now.getDate());
+// Data atual no fuso de São Paulo — via Intl (confiável em todos os browsers)
+const _p=new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+const _pv=Object.fromEntries(_p.filter(x=>x.type!=="literal").map(x=>[x.type,+x.value]));
+const TODAY=new Date(_pv.year,_pv.month-1,_pv.day);
 
 const FRETE={
   CWB:{AC:15,AM:17,AP:18,PA:11,RO:13,RR:22,TO:10,AL:13,BA:11,CE:15,MA:15,PB:14,PE:14,PI:16,RN:15,SE:12,ES:9,MG:8,RJ:8,SP:5,PR:4,RS:5,SC:5,DF:12,GO:9,MS:10,MT:11},
