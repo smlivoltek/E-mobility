@@ -75,7 +75,7 @@ function extractState(addr){
   return null;
 }
 
-function parseLocal(s){if(!s)return null;const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);}
+function parseLocal(s){if(!s)return null;if(s instanceof Date)return s;const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);}
 // Feriados nacionais 2026
 const FERIADOS=new Set(["2026-01-01","2026-02-16","2026-02-17","2026-04-03","2026-04-21",
   "2026-05-01","2026-06-04","2026-09-07","2026-10-12","2026-11-02","2026-11-15","2026-12-25"]);
@@ -397,7 +397,10 @@ function App(){
       if(wkF!=null){
         const wk=WEEKS[wkF];
         if(wk.overdue){if(o.status!=="ATRASADO")return false;}
-        else if(wk.start&&wk.end){if(!o.previsao)return false;const pv=parseLocal(o.previsao);if(pv<wk.start||pv>wk.end)return false;}
+        else if(wk.start&&wk.end){
+          const dateRef = o.entregue && o.dataEntregue ? parseLocal(o.dataEntregue) : o.previsao ? parseLocal(o.previsao) : null;
+          if(!dateRef)return false;
+          if(dateRef<wk.start||dateRef>wk.end)return false;}
       }
       return true;
     });
