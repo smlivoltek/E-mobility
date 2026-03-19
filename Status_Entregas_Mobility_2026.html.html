@@ -103,62 +103,62 @@ function fmt(d){if(!d)return"—";return(typeof d==="string"?new Date(d):d).toLo
 function fmtBRL(v){return v>0?new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",minimumFractionDigits:0,maximumFractionDigits:0}).format(v):"—";}
 
 const FU={
-  "LIVMFUN0701643":{nf:"842",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-05",dest:"PAPANDUVA - SC",uf:"SC",receive_pd:"2026-01-27",obs:null},
-  "LIVMMUN0701003":{nf:"843",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-06",dest:"IMBITUBA - SC",uf:"SC",receive_pd:"2026-01-27",obs:null},
-  "LIVMMUN0701843":{nf:"845",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-10",dest:"ITAPOÁ - SC",uf:"SC",receive_pd:"2026-01-27",obs:null},
-  "LIVMGRE1301522":{nf:"903",inv_date:"2026-01-23",shipping:"2026-01-26",delivery:"2026-01-27",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-23",obs:null},
-  "LIVMGRE1301440":{nf:"902",inv_date:"2026-01-23",shipping:"2026-01-26",delivery:"2026-01-27",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-23",obs:null},
+  "LIVMFUN0701643":{nf:"842",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-05",dest:"PAPANDUVA - SC",uf:"SC",receive_pd:"2026-01-27",obs:null,produto:"AC 22kW"}},
+  "LIVMMUN0701003":{nf:"843",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-06",dest:"IMBITUBA - SC",uf:"SC",receive_pd:"2026-01-27",obs:null,produto:"AC 22kW"}},
+  "LIVMMUN0701843":{nf:"845",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-10",dest:"ITAPOÁ - SC",uf:"SC",receive_pd:"2026-01-27",obs:null,produto:"AC 22kW"}},
+  "LIVMGRE1301522":{nf:"903",inv_date:"2026-01-23",shipping:"2026-01-26",delivery:"2026-01-27",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-23",obs:null,produto:"AC 7kW"}},
+  "LIVMGRE1301440":{nf:"902",inv_date:"2026-01-23",shipping:"2026-01-26",delivery:"2026-01-27",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-23",obs:null,produto:"AC 22kW"}},
   "LIVMADR1501888":null,
-  "LIVMJOR1501391":{nf:"853",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-26",dest:"BELO HORIZONTE – MG",uf:"MG",receive_pd:"2026-01-16",obs:null},
-  "LIVMENE1501105":{nf:"851",inv_date:"2026-01-16",shipping:"2026-01-16",delivery:"2026-01-16",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-01-15",obs:null},
+  "LIVMJOR1501391":{nf:"853",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-26",dest:"BELO HORIZONTE – MG",uf:"MG",receive_pd:"2026-01-16",obs:null,produto:"AC 7kW"}},
+  "LIVMENE1501105":{nf:"851",inv_date:"2026-01-16",shipping:"2026-01-16",delivery:"2026-01-16",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-01-15",obs:null,produto:"AC 22kW"}},
   "LIVMGAD1601998":null,
-  "LIVMINF2201172":{nf:"904",inv_date:"2026-01-26",shipping:"2026-03-04",delivery:"2026-03-09",dest:"VITÓRIA DA CONQUISTA - BA",uf:"BA",receive_pd:"2026-01-23",obs:null},
-  "LIVMTRO2701296":{nf:"948",inv_date:"2026-02-09",shipping:"2026-02-09",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-05",obs:null},
-  "LIVMTRO2701452":{nf:"913",inv_date:"2026-01-29",shipping:"2026-02-02",delivery:"2026-02-04",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-29",obs:null},
-  "LIVMTRO0302040":{nf:"925",inv_date:"2026-02-04",shipping:"2026-02-05",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-03",obs:null},
-  "LIVMENE2201840":{nf:"908",inv_date:"2026-01-27",shipping:"2026-01-27",delivery:"2026-01-27",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-01-27",obs:null},
-  "LIVPBRA2601633":{nf:"914",inv_date:"2026-01-29",shipping:"2026-02-06",delivery:"2026-02-09",dest:"SÃO JOSÉ - SC",uf:"SC",receive_pd:"2026-01-28",obs:null},
-  "LIVMYEL2701851":{nf:"949",inv_date:"2026-02-09",shipping:"2026-02-10",delivery:"2026-02-23",dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-02-06",obs:null},
-  "LIVMYEL2701380":{nf:"963",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-23",dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-02-11",obs:null},
-  "LIVMVOR0202552":{nf:"961",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-18",dest:"SANTANA DE PARNAIBA - SP",uf:"SP",receive_pd:"2026-02-11",obs:null},
-  "LIVMDAN0302920":{nf:"943",inv_date:"2026-02-05",shipping:"2026-02-06",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-04",obs:null},
-  "LIVMZOO2901269":{nf:"920",inv_date:"2026-02-03",shipping:"2026-02-04",delivery:"2026-02-11",dest:"CASCAVEL - PR",uf:"PR",receive_pd:"2026-01-30",obs:null},
-  "LIVMDRS0402680":{nf:"944",inv_date:"2026-02-06",shipping:"2026-02-06",delivery:"2026-02-24",dest:"CAXIAS DO SUL - RS",uf:"RS",receive_pd:"2026-02-04",obs:null},
-  "LIVMMAR0902802":{nf:"959",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-27",dest:"SUMARÉ - SP",uf:"SP",receive_pd:"2026-02-10",obs:null},
-  "LIVMFAB0902727":{nf:"960",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-27",dest:"JUNDIAÍ - SP",uf:"SP",receive_pd:"2026-02-10",obs:null},
-  "LIVMCIA1002389":{nf:"962",inv_date:"2026-02-11",shipping:"2026-02-12",delivery:"2026-02-20",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-10",obs:null},
-  "LIVMMAR1202921":{nf:"970",inv_date:"2026-02-18",shipping:"2026-02-23",delivery:"2026-03-12",dest:"FLORIANÓPOLIS - SC",uf:"SC",receive_pd:"2026-02-18",obs:null},
-  "LIVMPAT1902119":{nf:"984",inv_date:"2026-02-26",shipping:"2026-02-27",delivery:"2026-03-16",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-23",obs:null},
-  "LIVMMUN2002305":{nf:"988",inv_date:"2026-03-02",shipping:"2026-03-02",delivery:"2026-03-16",dest:"SANTA CATARINA - SC",uf:"SC",receive_pd:"2026-02-27",obs:"Cincatarina"},
-  "LIVMDIM2002356":{nf:"1010",inv_date:"2026-02-27",shipping:"2026-03-14",delivery:"2026-03-16",dest:"JOAÇABA - SC",uf:"SC",receive_pd:"2026-02-27",obs:null},
+  "LIVMINF2201172":{nf:"904",inv_date:"2026-01-26",shipping:"2026-03-04",delivery:"2026-03-09",dest:"VITÓRIA DA CONQUISTA - BA",uf:"BA",receive_pd:"2026-01-23",obs:"Produto precisa de retrabalho",produto:"DC 60kW"}},
+  "LIVMTRO2701296":{nf:"948",inv_date:"2026-02-09",shipping:"2026-02-09",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-05",obs:"Produto precisa de retrabalho",produto:"DC 60kW"}},
+  "LIVMTRO2701452":{nf:"913",inv_date:"2026-01-29",shipping:"2026-02-02",delivery:"2026-02-04",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-29",obs:"Produto precisa de retrabalho",produto:"DC 60kW"}},
+  "LIVMTRO0302040":{nf:"925",inv_date:"2026-02-04",shipping:"2026-02-05",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-03",obs:"Produto precisa de retrabalho",produto:"DC 60kW"}},
+  "LIVMENE2201840":{nf:"908",inv_date:"2026-01-27",shipping:"2026-01-27",delivery:"2026-01-27",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-01-27",obs:null,produto:"AC 7kW"}},
+  "LIVPBRA2601633":{nf:"914",inv_date:"2026-01-29",shipping:"2026-02-06",delivery:"2026-02-09",dest:"SÃO JOSÉ - SC",uf:"SC",receive_pd:"2026-01-28",obs:"Produto precisa de retrabalho",produto:"DC 60kW"}},
+  "LIVMYEL2701851":{nf:"949",inv_date:"2026-02-09",shipping:"2026-02-10",delivery:"2026-02-23",dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-02-06",obs:"Produto precisa de retrabalho",produto:"DC 60kW"}},
+  "LIVMYEL2701380":{nf:"963",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-23",dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-02-11",obs:"Produto precisa de retrabalho",produto:"DC 60kW"}},
+  "LIVMVOR0202552":{nf:"961",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-18",dest:"SANTANA DE PARNAIBA - SP",uf:"SP",receive_pd:"2026-02-11",obs:null,produto:"AC 7kW"}},
+  "LIVMDAN0302920":{nf:"943",inv_date:"2026-02-05",shipping:"2026-02-06",delivery:"2026-02-10",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-04",obs:"Produto precisa de retrabalho",produto:"DC 60kW"}},
+  "LIVMZOO2901269":{nf:"920",inv_date:"2026-02-03",shipping:"2026-02-04",delivery:"2026-02-11",dest:"CASCAVEL - PR",uf:"PR",receive_pd:"2026-01-30",obs:null,produto:"AC 7kW"}},
+  "LIVMDRS0402680":{nf:"944",inv_date:"2026-02-06",shipping:"2026-02-06",delivery:"2026-02-24",dest:"CAXIAS DO SUL - RS",uf:"RS",receive_pd:"2026-02-04",obs:null,produto:"AC 22kW"}},
+  "LIVMMAR0902802":{nf:"959",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-27",dest:"SUMARÉ - SP",uf:"SP",receive_pd:"2026-02-10",obs:null,produto:"AC 7kW"}},
+  "LIVMFAB0902727":{nf:"960",inv_date:"2026-02-11",shipping:"2026-02-13",delivery:"2026-02-27",dest:"JUNDIAÍ - SP",uf:"SP",receive_pd:"2026-02-10",obs:null,produto:"AC 7kW"}},
+  "LIVMCIA1002389":{nf:"962",inv_date:"2026-02-11",shipping:"2026-02-12",delivery:"2026-02-20",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-10",obs:"Produto precisa de retrabalho",produto:"DC 120kW"}},
+  "LIVMMAR1202921":{nf:"970",inv_date:"2026-02-18",shipping:"2026-02-23",delivery:"2026-03-12",dest:"FLORIANÓPOLIS - SC",uf:"SC",receive_pd:"2026-02-18",obs:null,produto:"AC 22kW"}},
+  "LIVMPAT1902119":{nf:"984",inv_date:"2026-02-26",shipping:"2026-02-27",delivery:"2026-03-16",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-02-23",obs:null,produto:"AC 7kW"}},
+  "LIVMMUN2002305":{nf:"988",inv_date:"2026-03-02",shipping:"2026-03-02",delivery:"2026-03-16",dest:"SANTA CATARINA - SC",uf:"SC",receive_pd:"2026-02-27",obs:"Cincatarina",produto:"AC 22kW"}},
+  "LIVMDIM2002356":{nf:"1010",inv_date:"2026-02-27",shipping:"2026-03-14",delivery:"2026-03-16",dest:"JOAÇABA - SC",uf:"SC",receive_pd:"2026-02-27",obs:null,produto:"DC 30kW"}},
   "LIVMCIA2402358":null,
-  "LIVMYEL2502787":{nf:"999",inv_date:"2026-03-02",shipping:"2026-03-04",delivery:"2026-03-05",dest:"APARECIDA DE GOIANIA - GO",uf:"GO",receive_pd:"2026-02-26",obs:null},
-  "LIVMREN2502006":{nf:"1002",inv_date:"2026-03-03",shipping:"2026-03-05",delivery:null,dest:"SÃO JOSÉ DOS PINHAIS - PR",uf:"PR",receive_pd:"2026-02-27",obs:null},
-  "LIVMENE2502011":{nf:"998",inv_date:"2026-03-02",shipping:"2026-03-02",delivery:"2026-03-02",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-02-25",obs:null},
+  "LIVMYEL2502787":{nf:"999",inv_date:"2026-03-02",shipping:"2026-03-04",delivery:"2026-03-05",dest:"APARECIDA DE GOIANIA - GO",uf:"GO",receive_pd:"2026-02-26",obs:"Produto precisa de retrabalho",produto:"DC 60kW"}},
+  "LIVMREN2502006":{nf:"1002",inv_date:"2026-03-03",shipping:"2026-03-05",delivery:null,dest:"SÃO JOSÉ DOS PINHAIS - PR",uf:"PR",receive_pd:"2026-02-27",obs:null,produto:"AC 22kW | DC 30kW"}},
+  "LIVMENE2502011":{nf:"998",inv_date:"2026-03-02",shipping:"2026-03-02",delivery:"2026-03-02",dest:"CURITIBA - PR",uf:"PR",receive_pd:"2026-02-25",obs:null,produto:"AC 7kW"}},
   "LIVMEUR0203002":null,
-  "LIVMDIM0203074":{nf:"1007",inv_date:"2026-03-05",shipping:"2026-03-06",delivery:null,dest:"FLORIANÓPOLIS - SC",uf:"SC",receive_pd:"2026-03-02",obs:null},
-  "LIVMMUL0203701":{nf:"1046",inv_date:"2026-03-16",shipping:null,delivery:null,dest:"SÃO LUIS - MA",uf:"MA",receive_pd:"2026-03-13",obs:null},
-  "LIVMPOW0203363":{nf:"1023",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:null,dest:"RIO DE JANEIRO - RJ",uf:"RJ",receive_pd:"2026-03-09",obs:null},
+  "LIVMDIM0203074":{nf:"1007",inv_date:"2026-03-05",shipping:"2026-03-06",delivery:null,dest:"FLORIANÓPOLIS - SC",uf:"SC",receive_pd:"2026-03-02",obs:null,produto:"DC 30kW"}},
+  "LIVMMUL0203701":{nf:"1046",inv_date:"2026-03-16",shipping:null,delivery:null,dest:"SÃO LUIS - MA",uf:"MA",receive_pd:"2026-03-13",obs:"Produto precisa de retrabalho",produto:"DC 60kW"}},
+  "LIVMPOW0203363":{nf:"1023",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:null,dest:"RIO DE JANEIRO - RJ",uf:"RJ",receive_pd:"2026-03-09",obs:null,produto:"Acessório"}},
   "LIVMENZ0403327":null,
-  "LIVMEMO0701137":{nf:"1018",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"SANTO ANDRÉ - SP",uf:"SP",receive_pd:"2026-03-09",obs:null},
-  "LIVMEMO0701138":{nf:"1019",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-03-09",obs:null},
-  "LIVMEMO0701139":{nf:"1020",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-14",dest:"LIMEIRA - SP",uf:"SP",receive_pd:"2026-03-09",obs:null},
-  "LIVMEMO0701140":{nf:"1021",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"CAÇAPAVA - SP",uf:"SP",receive_pd:"2026-03-09",obs:null},
-  "LIVMENE0701142":{nf:"1011",inv_date:"2026-03-09",shipping:"2026-03-10",delivery:null,dest:"CAMPO GRANDE - MS",uf:"MS",receive_pd:"2026-03-06",obs:null},
-  "LIVMJ7S0701143":{nf:"1047",inv_date:"2026-03-16",shipping:"2026-03-18",delivery:"2026-04-02",dest:"GOIANIA - GO",uf:"GO",receive_pd:"2026-03-13",obs:null},
-  "LIVMDIM0701144":{nf:"1022",inv_date:"2026-03-11",shipping:null,delivery:null,dest:"PORTO BELO - SC",uf:"SC",receive_pd:"2026-03-09",obs:null},
-  "LIVMYEL0701147":{nf:null,inv_date:null,shipping:null,delivery:null,dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-03-13",obs:null},
+  "LIVMEMO0701137":{nf:"1018",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"SANTO ANDRÉ - SP",uf:"SP",receive_pd:"2026-03-09",obs:null,produto:"DC 30kW"}},
+  "LIVMEMO0701138":{nf:"1019",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-03-09",obs:null,produto:"DC 30kW"}},
+  "LIVMEMO0701139":{nf:"1020",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-14",dest:"LIMEIRA - SP",uf:"SP",receive_pd:"2026-03-09",obs:null,produto:"DC 30kW"}},
+  "LIVMEMO0701140":{nf:"1021",inv_date:"2026-03-11",shipping:"2026-03-12",delivery:"2026-03-13",dest:"CAÇAPAVA - SP",uf:"SP",receive_pd:"2026-03-09",obs:null,produto:"DC 30kW"}},
+  "LIVMENE0701142":{nf:"1011",inv_date:"2026-03-09",shipping:"2026-03-10",delivery:null,dest:"CAMPO GRANDE - MS",uf:"MS",receive_pd:"2026-03-06",obs:null,produto:"AC 7kW"}},
+  "LIVMJ7S0701143":{nf:"1047",inv_date:"2026-03-16",shipping:"2026-03-18",delivery:"2026-04-02",dest:"GOIANIA - GO",uf:"GO",receive_pd:"2026-03-13",obs:"Produto precisa de retrabalho",produto:"DC 120kW"}},
+  "LIVMDIM0701144":{nf:"1022",inv_date:"2026-03-11",shipping:null,delivery:null,dest:"PORTO BELO - SC",uf:"SC",receive_pd:"2026-03-09",obs:"Produto precisa de retrabalho",produto:"DC 120kW"}},
+  "LIVMYEL0701147":{nf:null,inv_date:null,shipping:null,delivery:null,dest:"BRASÍLIA - DF",uf:"DF",receive_pd:"2026-03-13",obs:"Produto precisa de retrabalho",produto:"DC 120kW"}},
   "LIVMSEI1025016":{nf:"730",inv_date:"2026-01-23",shipping:"2026-01-27",delivery:"2026-01-28",dest:"MOGI DAS CRUZES - SP",uf:"SP",receive_pd:"2026-01-23",obs:null},
   "LIVMGW-0112967":{nf:"762",inv_date:"2026-01-14",shipping:"2026-01-16",delivery:"2026-01-23",dest:"SÃO JOSÉ DO RIO PRETO - SP",uf:"SP",receive_pd:"2026-01-14",obs:null},
   "LIVMMUN1612133":{nf:"7576",inv_date:"2026-01-08",shipping:"2026-01-12",delivery:"2026-01-29",dest:"Rodeio - SC",uf:"SC",receive_pd:"2026-01-08",obs:null},
   "LIVMPOW0601511":{nf:"841",inv_date:"2026-01-07",shipping:"2026-01-08",delivery:"2026-01-20",dest:"PINHAIS - PR",uf:"PR",receive_pd:"2026-01-06",obs:null},
-  "LIVMMUN0701622":{nf:"844",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-05",dest:"ITAPOÁ - SC",uf:"SC",receive_pd:"2026-01-27",obs:null},
-  "LIVMZUU1612305":{nf:"849",inv_date:"2026-01-15",shipping:"2026-01-16",delivery:"2026-01-23",dest:"SÃO BERNARDO DO CAMPO - SP",uf:"SP",receive_pd:"2026-01-14",obs:null},
+  "LIVMMUN0701622":{nf:"844",inv_date:"2026-01-27",shipping:"2026-01-29",delivery:"2026-02-05",dest:"ITAPOÁ - SC",uf:"SC",receive_pd:"2026-01-27",obs:null,produto:"AC 22kW"}},
+  "LIVMZUU1612305":{nf:"849",inv_date:"2026-01-15",shipping:"2026-01-16",delivery:"2026-01-23",dest:"SÃO BERNARDO DO CAMPO - SP",uf:"SP",receive_pd:"2026-01-14",obs:null,produto:"AC 22kW | AC 7kW"}},
   "LIVMSPT1301499":{nf:"7733",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-21",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-16",obs:null},
   "LIVMSPT1301926":{nf:"7734",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-21",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-16",obs:null},
   "LIVMSPT1301832":{nf:"7735",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-21",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-16",obs:null},
   "LIVMSPT1301577":{nf:"7736",inv_date:"2026-01-16",shipping:"2026-01-20",delivery:"2026-01-21",dest:"SÃO PAULO - SP",uf:"SP",receive_pd:"2026-01-16",obs:null},
-  "LIVMEUR0701152":{nf:"1045",inv_date:"2026-03-16",shipping:"2026-03-17",delivery:null,dest:"RIBEIRÃO PRETO - SP",uf:"SP",receive_pd:"2026-03-13",obs:null},
+  "LIVMEUR0701152":{nf:"1045",inv_date:"2026-03-16",shipping:"2026-03-17",delivery:null,dest:"RIBEIRÃO PRETO - SP",uf:"SP",receive_pd:"2026-03-13",obs:null,produto:"AC 7kW"}},
 };
 
 // ── Somente pedidos MOBILITY ──────────────────────────────────────────────────
@@ -243,7 +243,7 @@ function processOrder(o){
   else if(prazo==null)status="SEM_PRAZO";
   else if(d<0)        status="ATRASADO";
   else                status="NO_PRAZO";
-  return{...o,nf,has_nf,dt_nf,shipping,receive_pd,rec_sm,dias_sm,local_entrega:local_raw,totvs_flag,state,prazo,previsao,diff:d,status,fase,fu_delivery,fu_found,obs:fu?.obs||null};
+  return{...o,nf,has_nf,dt_nf,shipping,receive_pd,rec_sm,dias_sm,local_entrega:local_raw,totvs_flag,state,prazo,previsao,diff:d,status,fase,fu_delivery,fu_found,obs:fu?.obs||null,produto:fu?.produto||null};
 }
 
 const BASE=RAW_ALL.map(processOrder);
@@ -288,6 +288,7 @@ const COLS=[
   {label:"Pedido",       col:"pedido"},
   {label:"Cliente",      col:null},
   {label:"Vendedor",     col:"vendedor"},
+  {label:"Produto",      col:"produto"},
   {label:"NF",           col:null},
   {label:"Data NF",      col:"dt_nf"},
   {label:"Shipping",     col:"shipping"},
@@ -495,6 +496,17 @@ function App(){
                           {o.vendedor}
                         </span>
                       </td>
+                      {/* Produto */}
+                      <td style={{whiteSpace:"nowrap",fontSize:10}}>
+                        {o.produto
+                          ? <span style={{
+                              padding:"2px 7px",borderRadius:6,fontSize:10,fontWeight:600,
+                              background:o.produto.includes("DC")?"#eff6ff":"#f0fdf4",
+                              color:o.produto.includes("DC")?"#1d4ed8":"#166534",
+                              border:`1px solid ${o.produto.includes("DC")?"#bfdbfe":"#bbf7d0"}`
+                            }}>{o.produto}</span>
+                          : <span style={{color:"#cbd5e1"}}>—</span>}
+                      </td>
                       {/* NF */}
                       <td style={{fontWeight:o.has_nf?600:400,color:o.has_nf?"#15803d":"#dc2626",whiteSpace:"nowrap"}}>
                         {o.nf||"—"}
@@ -547,7 +559,7 @@ function App(){
                     </tr>
                   );
                 })}
-                {!sorted.length&&<tr><td colSpan={15} style={{padding:28,textAlign:"center",color:"#94a3b8"}}>Nenhum pedido encontrado</td></tr>}
+                {!sorted.length&&<tr><td colSpan={16} style={{padding:28,textAlign:"center",color:"#94a3b8"}}>Nenhum pedido encontrado</td></tr>}
               </tbody>
             </table>
           </div>
