@@ -479,7 +479,7 @@
     </div>
     <div class="updated">
       <span class="live-dot"></span>
-      Atualizado · 18 Mar 2026
+      Atualizado · 23 Mar 2026
     </div>
   </div>
 
@@ -494,8 +494,8 @@
   <div style="background:linear-gradient(135deg,rgba(251,146,60,.12),rgba(245,158,11,.08));border:1px solid rgba(251,146,60,.35);border-left:4px solid #fb923c;border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:14px;animation:fadeUp .4s ease .08s both">
     <div style="font-size:22px;filter:drop-shadow(0 0 6px rgba(251,146,60,.5))">⚠️</div>
     <div style="flex:1">
-      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fb923c;margin-bottom:3px">3 POs sem previsão de embarque da China</div>
-      <div style="font-size:12px;color:#fbbf74;line-height:1.5">FORE011, CWBE004 e CWBE005 com ETA indefinida — ainda não saíram da fábrica. <strong style="color:#fff">417 unidades</strong> pendentes.</div>
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fb923c;margin-bottom:3px">1 PO sem previsão de embarque da China</div>
+      <div style="font-size:12px;color:#fbbf74;line-height:1.5">CWBE005 com ETA indefinida — ainda não saiu da fábrica. <strong style="color:#fff">396 unidades</strong> pendentes.</div>
     </div>
     <button onclick="switchTab('pendencias')" style="flex-shrink:0;display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;background:rgba(251,146,60,.15);border:1px solid rgba(251,146,60,.4);color:#fb923c;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Ver pendências →</button>
   </div>
@@ -512,15 +512,20 @@
       <div class="kpi-value">440</div>
       <div class="kpi-sub">Total de carregadores 2026</div>
     </div>
+    <div class="kpi" style="--kc: var(--cyan)">
+      <div class="kpi-label">Em Trânsito</div>
+      <div class="kpi-value">2</div>
+      <div class="kpi-sub">FORE011 · ETA 19/05 · CWBE004</div>
+    </div>
     <div class="kpi" style="--kc: var(--yellow)">
       <div class="kpi-label">Aguardando Embarque</div>
-      <div class="kpi-value">3</div>
-      <div class="kpi-sub">FORE011 · CWBE004 · CWBE005</div>
+      <div class="kpi-value">1</div>
+      <div class="kpi-sub">CWBE005 · sem ETD</div>
     </div>
     <div class="kpi" style="--kc: var(--blue)">
       <div class="kpi-label">Em Desembaraço</div>
       <div class="kpi-value">1</div>
-      <div class="kpi-sub">CWBE001 · ETA 23/03/2026</div>
+      <div class="kpi-sub">CWBE001 · ETA 25/03/2026</div>
     </div>
     <div class="kpi" style="--kc: var(--purple)">
       <div class="kpi-label">Destinos</div>
@@ -532,7 +537,7 @@
   <!-- TABS -->
   <div class="tabs">
     <button class="tab-btn active" id="tab-todos" onclick="switchTab('todos')">📦 Todos os POs</button>
-    <button class="tab-btn tab-alert" id="tab-pendencias" onclick="switchTab('pendencias')">⚠️ Pendências <span class="tab-badge">3</span></button>
+    <button class="tab-btn tab-alert" id="tab-pendencias" onclick="switchTab('pendencias')">⚠️ Pendências <span class="tab-badge">1</span></button>
   </div>
 
   <!-- ══ TAB: TODOS OS POs ══ -->
@@ -563,7 +568,7 @@
             </span>
           </span>
           <span class="po-eta" style="color:var(--white);font-size:12px">
-            📅 ETA: <strong style="color:var(--cyan)">23/03/2026</strong>
+            📅 ETA: <strong style="color:var(--cyan)">25/03/2026</strong>
           </span>
           <span class="dest-badge dest-cwb">📍 Paranaguá → Curitiba</span>
         </div>
@@ -591,7 +596,7 @@
               <td><span class="model-badge ac">AC · 40 kW</span></td>
               <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">MC Series, 40kW, 400Vac, CCS2 133A, parede</td>
               <td><span class="date-val">10/11/2025</span></td>
-              <td><span class="date-val">23/03/2026</span></td>
+              <td><span class="date-val">25/03/2026</span></td>
               <td><span class="dest-badge dest-cwb">Curitiba</span></td>
               <td class="qty-cell">10</td>
               <td><span class="status-badge s-desembaraco"><span class="status-dot"></span>Desembaraço</span></td>
@@ -602,7 +607,7 @@
               <td><span class="model-badge dc">DC · 180 kW</span></td>
               <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">MotionFast 180kW, 2×CCS2 300A, solo, 4G/RFID</td>
               <td><span class="date-val">10/11/2025</span></td>
-              <td><span class="date-val">23/03/2026</span></td>
+              <td><span class="date-val">25/03/2026</span></td>
               <td><span class="dest-badge dest-cwb">Curitiba</span></td>
               <td class="qty-cell">13</td>
               <td><span class="status-badge s-desembaraco"><span class="status-dot"></span>Desembaraço</span></td>
@@ -613,22 +618,21 @@
     </div>
 
     <!-- ─ PO 2: FORE011/2026 ─ -->
-    <div class="po-card" data-dest="for" data-status="aguardando" style="border-left:3px solid #fb923c;">
+    <div class="po-card" data-dest="for" data-status="transito">
       <div class="po-header" onclick="toggleCard(this)">
         <div class="po-num">FORE011/2026</div>
         <div class="po-meta">
           <span class="po-ip">IP: H-FOR006/2026</span>
           <span class="po-eta">
-            <span class="status-badge s-aguardando">
+            <span class="status-badge s-transito">
               <span class="status-dot"></span>
-              Aguardando embarque
+              Em trânsito
             </span>
           </span>
-          <span class="po-eta" style="color:var(--muted);font-size:12px">
-            📅 ETA: <strong style="color:var(--muted)">—</strong>
+          <span class="po-eta" style="color:var(--white);font-size:12px">
+            📅 ETA: <strong style="color:var(--cyan)">19/05/2026</strong>
           </span>
           <span class="dest-badge dest-for">📍 Fortaleza</span>
-          <span class="alert-flag">⚠️ SEM ETD · 106 dias</span>
         </div>
         <div class="po-collapse-icon">▼</div>
       </div>
@@ -654,10 +658,10 @@
               <td><span class="model-badge ac">AC · 40 kW</span></td>
               <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">MC Series, 40kW, 400Vac, CCS2 133A, parede</td>
               <td><span class="date-val">03/12/2025</span></td>
-              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span class="date-val">19/05/2026</span></td>
               <td><span class="dest-badge dest-for">Fortaleza</span></td>
               <td class="qty-cell">20</td>
-              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+              <td><span class="status-badge s-transito"><span class="status-dot"></span>Em trânsito</span></td>
             </tr>
           </tbody>
         </table>
@@ -665,22 +669,21 @@
     </div>
 
     <!-- ─ PO 3: CWBE004/2026 ─ -->
-    <div class="po-card" data-dest="cwb" data-status="aguardando" style="border-left:3px solid #fb923c;">
+    <div class="po-card" data-dest="cwb" data-status="transito">
       <div class="po-header" onclick="toggleCard(this)">
         <div class="po-num">CWBE004/2026</div>
         <div class="po-meta">
           <span class="po-ip">IP: H-CWB003/2026</span>
           <span class="po-eta">
-            <span class="status-badge s-aguardando">
+            <span class="status-badge s-transito">
               <span class="status-dot"></span>
-              Aguardando embarque
+              Em trânsito
             </span>
           </span>
           <span class="po-eta" style="color:var(--muted);font-size:12px">
             📅 ETA: <strong style="color:var(--muted)">—</strong>
           </span>
           <span class="dest-badge dest-cwb">📍 Paranaguá → Curitiba</span>
-          <span class="alert-flag">⚠️ SEM ETD · 64 dias</span>
         </div>
         <div class="po-collapse-icon">▼</div>
       </div>
@@ -706,10 +709,10 @@
               <td><span class="model-badge dc">DC · 160 kW</span></td>
               <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">MotionFast 160kW</td>
               <td><span class="date-val">13/01/2026</span></td>
-              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span style="font-size:11px;color:var(--muted);font-style:italic">Pendente</span></td>
               <td><span class="dest-badge dest-cwb">Curitiba</span></td>
               <td class="qty-cell">1</td>
-              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+              <td><span class="status-badge s-transito"><span class="status-dot"></span>Em trânsito</span></td>
             </tr>
           </tbody>
         </table>
@@ -724,9 +727,9 @@
           <span class="po-ip">IP: pending</span>
           <span class="alert-flag">⚠️ SEM ETD · 9 dias</span>
           <span class="po-eta">
-            <span class="status-badge s-aguardando">
+            <span class="status-badge s-transito">
               <span class="status-dot"></span>
-              Aguardando embarque
+              Em trânsito
             </span>
           </span>
           <span class="po-eta" style="color:var(--muted);font-size:12px">
@@ -824,10 +827,10 @@
               <td><span class="model-badge dc">DC · 180 kW</span></td>
               <td style="font-size:11px;color:var(--muted);max-width:260px;line-height:1.4">CC 180kW, MSF, 2×GB/T, RFID, ETH, 4G</td>
               <td><span class="date-val">09/03/2026</span></td>
-              <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:JetBrains Mono,monospace">⚠️ —</span></td>
+              <td><span style="font-size:11px;color:var(--muted);font-style:italic">Pendente</span></td>
               <td><span class="dest-badge dest-cwb">Curitiba</span></td>
               <td class="qty-cell">1</td>
-              <td><span class="status-badge s-aguardando"><span class="status-dot"></span>Aguardando</span></td>
+              <td><span class="status-badge s-transito"><span class="status-dot"></span>Em trânsito</span></td>
             </tr>
           </tbody>
         </table>
@@ -847,7 +850,7 @@
         <div class="pend-banner-title">Itens sem previsão de embarque da China</div>
         <div class="pend-banner-body">
           ETA Destination = <strong>pendente</strong> + Status = <strong>Aguardando embarque</strong> indica que o item
-          <strong>ainda não saiu da fábrica</strong>. Confirmar ETD com a China para cada PO abaixo.
+          <strong>ainda não saiu da fábrica</strong>. Confirmar ETD com a China para CWBE005.
         </div>
       </div>
     </div>
@@ -860,58 +863,16 @@
         <span>Dias sem ETD</span><span>Necessity</span><span>Destino</span>
       </div>
       <div class="pend-row">
-        <span><span class="code-cell" style="color:#fb923c">FORE011/2026</span></span>
-        <span><span class="code-cell">H-FOR006/2026</span></span>
-        <span><span class="date-val">03/12/2025</span></span>
-        <span><span class="dias-badge dias-red">🔴 106 dias — urgente</span></span>
-        <span><span class="nec-badge">Abr/26</span></span>
-        <span><span class="dest-badge dest-for">Fortaleza</span></span>
-      </div>
-      <div class="pend-row">
-        <span><span class="code-cell" style="color:#fb923c">CWBE004/2026</span></span>
-        <span><span class="code-cell">H-CWB003/2026</span></span>
-        <span><span class="date-val">13/01/2026</span></span>
-        <span><span class="dias-badge dias-mid">🟡 64 dias</span></span>
-        <span><span class="nec-badge">Jun/26</span></span>
-        <span><span class="dest-badge dest-cwb">Curitiba</span></span>
-      </div>
-      <div class="pend-row">
         <span><span class="code-cell" style="color:#fb923c">CWBE005/2026</span></span>
         <span><span style="font-size:11px;color:var(--muted);font-style:italic">pending</span></span>
         <span><span class="date-val">09/03/2026</span></span>
-        <span><span class="dias-badge dias-ok">🟢 9 dias</span></span>
+        <span><span class="dias-badge dias-ok">🟢 14 dias</span></span>
         <span><span class="nec-badge">Set/26</span></span>
         <span><span class="dest-badge dest-cwb">Curitiba</span></span>
       </div>
     </div>
 
-    <!-- FORE011 detail -->
-    <div class="pend-detail-card">
-      <div class="pend-detail-head">
-        <span class="pend-po-num">FORE011/2026</span>
-        <span class="po-ip">H-FOR006/2026</span>
-        <span class="alert-flag">⚠️ SEM ETD · 106 dias</span>
-        <span class="dest-badge dest-for">📍 Fortaleza</span>
-        <span style="font-size:11px;color:#f87171;font-weight:700;margin-left:4px">🔴 Mais urgente</span>
-      </div>
-      <div class="po-body"><table>
-        <thead><tr>
-          <th>Necessity</th><th>Livoltek Code</th><th>Tipo</th><th>Descrição</th>
-          <th>PO Sent</th><th>ETA</th><th style="text-align:right">Qty</th>
-        </tr></thead>
-        <tbody><tr>
-          <td><span class="nec-badge">Abr/26</span></td>
-          <td><span class="code-cell">C04010E2EAFER11003</span></td>
-          <td><span class="model-badge ac">AC · 40 kW</span></td>
-          <td style="font-size:11px;color:var(--muted);line-height:1.4">MC Series, 40kW, CCS2 133A, wall mounted</td>
-          <td><span class="date-val">03/12/2025</span></td>
-          <td><span style="font-size:11px;color:#fb923c;font-weight:700;font-family:'JetBrains Mono',monospace">⚠️ —</span></td>
-          <td class="qty-cell">20</td>
-        </tr></tbody>
-      </table></div>
-    </div>
 
-    <!-- CWBE004 detail -->
     <div class="pend-detail-card">
       <div class="pend-detail-head">
         <span class="pend-po-num">CWBE004/2026</span>
