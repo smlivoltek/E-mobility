@@ -98,44 +98,134 @@
             font-weight: 600;
         }
 
-        .client-row {
+        .clients-grid {
             display: grid;
-            grid-template-columns: 150px 1fr 120px 120px;
-            gap: 15px;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            background: #f8f9fa;
-            align-items: center;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
         }
 
-        .client-name {
-            font-weight: 600;
-            color: #2c3e50;
+        .client-card {
+            background: white;
+            border: 1px solid #ecf0f1;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .client-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .client-card-title {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .client-revenue {
+            gap: 10px;
             font-size: 1.3rem;
             font-weight: 700;
-            color: #27ae60;
+            color: #2c3e50;
         }
 
-        .client-participation {
-            text-align: right;
+        .client-card-units {
+            background: #3498db;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
             font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .client-card-info {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .client-card-info div {
+            margin-bottom: 5px;
+        }
+
+        .client-card-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .client-stat {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .client-stat-label {
+            font-size: 0.7rem;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .client-stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .client-stat.entregue .client-stat-value { color: #27ae60; }
+        .client-stat.transito .client-stat-value { color: #f39c12; }
+
+        .client-card-chart {
+            margin-top: 15px;
+        }
+
+        .chart-bars {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .chart-bar-container {
+            text-align: center;
+        }
+
+        .chart-bar-wrapper {
+            height: 100px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .chart-bar {
+            width: 50px;
+            border-radius: 4px 4px 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .chart-bar.pendente { background: #bdc3c7; }
+        .chart-bar.faturado { background: #34495e; }
+        .chart-bar.transito { background: #f39c12; }
+        .chart-bar.entregue { background: #27ae60; }
+
+        .chart-bar-label {
+            font-size: 0.7rem;
             color: #7f8c8d;
         }
 
-        .client-growth {
-            text-align: right;
+        .chart-bar-value {
+            font-size: 0.9rem;
             font-weight: 600;
+            color: #2c3e50;
+            margin-top: 5px;
         }
-
-        .client-growth.positive { color: #27ae60; }
-        .client-growth.negative { color: #e74c3c; }
 
         /* Gráficos */
         .charts-grid {
@@ -281,7 +371,7 @@
             <!-- MEIO: Análise por Cliente -->
             <div class="clients-analysis">
                 <h2>📊 Análise por Cliente</h2>
-                <div id="clients-rows"></div>
+                <div class="clients-grid" id="clients-grid"></div>
             </div>
 
             <!-- Gráficos -->
@@ -331,6 +421,24 @@
             'TC': '🚐'
         };
 
+        const contratoInfo = {
+            'GWM': {
+                vigencia: '09/02/2025 – Indeterminado',
+                status: 'Ativo',
+                observacao: 'Fornecimento sob demanda, sem obrigação mínima de volume'
+            },
+            'RENAULT': {
+                vigencia: '-- à --',
+                status: 'Ativo',
+                observacao: 'Sem volume mínimo obrigatório'
+            },
+            'TC': {
+                vigencia: '-- à --',
+                status: 'Ativo',
+                observacao: 'Sem volume mínimo obrigatório'
+            }
+        };
+
         let estoqueData = [];
 
         let charts = {};
@@ -351,7 +459,8 @@
             QUANTIDADE: colToIndex('AJ'),
             VALOR_TOTAL: colToIndex('AL'),
             DATA_PEDIDO: colToIndex('C'),
-            DATA_FATURAMENTO: colToIndex('BG')
+            DATA_FATURAMENTO: colToIndex('BG'),
+            NUM_PEDIDO: colToIndex('K')  // ✅ CORRIGIDO: K (não J)
         };
 
         function parseCSV(text) {
@@ -448,20 +557,36 @@
         }
 
         function processEstoque(rawData) {
-            estoqueData = [];
+            console.log('\n📦 PROCESSANDO ESTOQUE:');
+            console.log('  Linhas recebidas:', rawData.length);
             
-            rawData.forEach(row => {
+            estoqueData = [];
+            let count = 0;
+            
+            rawData.forEach((row, index) => {
                 const bomId = (row[0] || '').toString().trim(); // Coluna A = BOM ID
                 const descricao = (row[2] || '').toString().trim(); // Coluna C = Descrição
-                const disponivel = parseInt(row[13]) || 0; // Coluna N = DISPONIVEL
-                const totvs = parseInt(row[8]) || 0; // Coluna I = TOTAL (TOTVS)
+                const disponivel = parseInt(row[8]) || 0; // Coluna I = DISPONIVEL ✅
+                const reservas = parseInt(row[9]) || 0; // Coluna J = RESERVAS ✅
+                const totvs = parseInt(row[8]) || 0; // Coluna I = TOTVS
+                
+                // Debug primeiras 3 linhas
+                if (count < 3) {
+                    console.log(`\n  Linha ${index}:`);
+                    console.log('    BOM ID (col A):', bomId);
+                    console.log('    Descrição (col C):', descricao);
+                    console.log('    DISPONIVEL (col I):', disponivel);
+                    console.log('    RESERVAS (col J):', reservas);
+                    count++;
+                }
                 
                 // Só adicionar se disponível <= 0 (crítico)
                 if (bomId && disponivel <= 0) {
                     estoqueData.push({
                         produto: bomId,
-                        nome: descricao.substring(0, 30), // Resumir nome
+                        nome: descricao.substring(0, 30),
                         disponivel,
+                        reservas,
                         totvs
                     });
                 }
@@ -473,7 +598,12 @@
             // Pegar top 5 mais críticos
             estoqueData = estoqueData.slice(0, 5);
             
-            console.log('📦 Estoque crítico:', estoqueData.length, 'itens');
+            console.log('  ✅ Itens críticos encontrados:', estoqueData.length);
+            if (estoqueData.length > 0) {
+                console.log('  Top 3 mais críticos:', estoqueData.slice(0, 3));
+            } else {
+                console.log('  ⚠️ NENHUM item crítico (disponível <= 0)');
+            }
         }
 
         function processData(rawData) {
@@ -498,13 +628,31 @@
             const evolucaoPorMes = {};
             const pedidosUnicos = new Set();
             
-            dadosContrato.forEach(row => {
+            // 🔍 DEBUG: Mostrar primeiros 5 pedidos GWM
+            console.log('\n🔍 DEBUG - PRIMEIROS PEDIDOS GWM:');
+            let gwmCount = 0;
+            
+            dadosContrato.forEach((row, index) => {
                 const cliente = (row[COL.CLIENTE] || '').toString().trim();
-                const status = (row[COL.STATUS] || '').toString().toUpperCase().trim();
+                const status = (row[COL.STATUS] || '').toString().trim();
                 const produto = (row[COL.PRODUTO] || '').toString().trim();
                 const valor = parseValor(row[COL.VALOR_TOTAL]);
                 const dataFat = parseData(row[COL.DATA_FATURAMENTO]);
                 const dataPedido = parseData(row[COL.DATA_PEDIDO]);
+                const numPedido = (row[COL.NUM_PEDIDO] || '').toString().trim();
+                
+                // 🔍 DEBUG GWM
+                if ((cliente.toUpperCase().includes('GWM') || cliente.toUpperCase().includes('DIMAS')) && gwmCount < 5) {
+                    console.log(`\n📋 Pedido GWM #${gwmCount + 1}:`);
+                    console.log('  Número:', numPedido);
+                    console.log('  Cliente:', cliente);
+                    console.log('  Status ORIGINAL:', `"${status}"`);
+                    console.log('  Produto:', produto);
+                    console.log('  Quantidade (col AJ):', row[COL.QUANTIDADE], '→', parseInt(row[COL.QUANTIDADE]) || 0);
+                    console.log('  Valor:', valor);
+                    console.log('  Data Faturamento:', dataFat);
+                    gwmCount++;
+                }
                 
                 let clienteNome = cliente.toUpperCase();
                 if (clienteNome.includes('GWM') || clienteNome.includes('DIMAS')) {
@@ -522,32 +670,51 @@
                         receita: 0,
                         pedidos: 0,
                         pedidosFaturados: 0,
+                        unidades: 0,
                         entregue: 0,
                         transito: 0,
                         pendente: 0,
-                        receitaPorMes: {}
+                        faturado: 0,
+                        receitaPorMes: {},
+                        produtosPorQtd: {}
                     };
                 }
                 
                 // Contar pedidos únicos
-                const pedidoId = `${clienteNome}-${dataPedido?.getTime()}-${valor}`;
+                const pedidoId = `${clienteNome}-${numPedido}`;
                 if (!pedidosUnicos.has(pedidoId)) {
                     clientes[clienteNome].pedidos += 1;
                     totalPedidos += 1;
                     pedidosUnicos.add(pedidoId);
                 }
                 
-                // 🔥 CORREÇÃO 1: SÓ CONTAR RECEITA SE FATURADO/ENTREGUE
-                const isFaturado = status.includes('FATURADO') || status.includes('ENTREGUE') || 
-                                  status.includes('CONCLUÍ') || status.includes('DELIVERED');
+                const statusUpper = status.toUpperCase();
+                const isFaturado = statusUpper.includes('FINALIZADO') || 
+                                  statusUpper.includes('FATURADO') || 
+                                  statusUpper.includes('ENVIADO');
+                
+                // Contar unidades (quantidade de produtos)
+                const quantidade = parseInt(row[COL.QUANTIDADE]) || 0;
+                clientes[clienteNome].unidades += quantidade;
+                
+                // 🔍 LOG de acúmulo de unidades GWM
+                if ((cliente.toUpperCase().includes('GWM') || cliente.toUpperCase().includes('DIMAS')) && quantidade > 0) {
+                    console.log(`  ➕ Somando ${quantidade} unidades de ${produto} | Total GWM agora: ${clientes['GWM'].unidades}`);
+                }
+                
+                // Rastrear produtos por quantidade
+                if (produto) {
+                    clientes[clienteNome].produtosPorQtd[produto] = 
+                        (clientes[clienteNome].produtosPorQtd[produto] || 0) + quantidade;
+                }
                 
                 if (isFaturado) {
                     clientes[clienteNome].receita += valor;
                     clientes[clienteNome].pedidosFaturados += 1;
+                    clientes[clienteNome].faturado += 1;
                     totalReceita += valor;
                     totalPedidosFaturados += 1;
                     
-                    // 🔥 CORREÇÃO 3: EVOLUÇÃO MENSAL CONFIÁVEL (YYYY-MM)
                     if (dataFat) {
                         const mesChave = `${dataFat.getFullYear()}-${String(dataFat.getMonth() + 1).padStart(2, '0')}`;
                         evolucaoPorMes[mesChave] = (evolucaoPorMes[mesChave] || 0) + valor;
@@ -555,21 +722,44 @@
                             (clientes[clienteNome].receitaPorMes[mesChave] || 0) + valor;
                     }
                     
-                    // Produtos (só faturados)
                     if (produto) {
                         produtosReceita[produto] = (produtosReceita[produto] || 0) + valor;
                     }
                 }
                 
-                // Status (contar todos, não só faturados)
-                if (status.includes('ENTREGUE') || status.includes('CONCLUÍ')) {
+                // Status detalhado
+                if (statusUpper.includes('FINALIZADO') || statusUpper.includes('ENVIADO')) {
                     clientes[clienteNome].entregue += 1;
                     totalEntregue += 1;
-                } else if (status.includes('TRÂNSIT') || status.includes('TRANSIT')) {
+                } else if (statusUpper.includes('TRÂNSIT') || statusUpper.includes('TRANSIT')) {
                     clientes[clienteNome].transito += 1;
-                } else if (status.includes('PENDENTE') || status.includes('PENDING')) {
+                } else if (statusUpper.includes('PENDENTE')) {
                     clientes[clienteNome].pendente += 1;
                 }
+            });
+            
+            console.log('\n✅ RESUMO POR CLIENTE:');
+            Object.keys(clientes).forEach(c => {
+                // Encontrar principal produto
+                const prodEntries = Object.entries(clientes[c].produtosPorQtd);
+                if (prodEntries.length > 0) {
+                    const [principalProd, qtd] = prodEntries.sort((a, b) => b[1] - a[1])[0];
+                    clientes[c].principalProduto = principalProd;
+                } else {
+                    clientes[c].principalProduto = '--';
+                }
+                
+                console.log(`\n${c}:`);
+                console.log('  📦 UNIDADES:', clientes[c].unidades);
+                console.log('  Receita:', clientes[c].receita);
+                console.log('  Pedidos Total:', clientes[c].pedidos);
+                console.log('  Pedidos Faturados:', clientes[c].pedidosFaturados);
+                console.log('  Faturado:', clientes[c].faturado);
+                console.log('  Entregue:', clientes[c].entregue);
+                console.log('  Em Trânsito:', clientes[c].transito);
+                console.log('  Pendente:', clientes[c].pendente);
+                console.log('  Principal Produto:', clientes[c].principalProduto);
+                console.log('  Produtos por quantidade:', clientes[c].produtosPorQtd);
             });
             
             // Calcular participação
@@ -583,16 +773,16 @@
                 .slice(0, 3)
                 .map(([nome, receita]) => ({ nome, receita }));
             
-            // 🔥 CORREÇÃO 3: ORDENAR EVOLUÇÃO MENSAL CORRETAMENTE
+            // Evolução mensal
             const evolucaoMensal = Object.entries(evolucaoPorMes)
-                .sort((a, b) => a[0].localeCompare(b[0])) // Ordena YYYY-MM
+                .sort((a, b) => a[0].localeCompare(b[0]))
                 .map(([mesChave, valor]) => {
                     const [ano, mes] = mesChave.split('-');
                     const mesNome = new Date(parseInt(ano), parseInt(mes) - 1).toLocaleString('pt-BR', { month: 'short' });
                     return { mes: mesNome, mesChave, valor };
                 });
             
-            // 🔥 CORREÇÃO 4: CALCULAR CRESCIMENTO MÊS ATUAL VS ANTERIOR
+            // Crescimento
             const mesesOrdenados = Object.keys(evolucaoPorMes).sort();
             const mesAtual = mesesOrdenados[mesesOrdenados.length - 1];
             const mesAnterior = mesesOrdenados[mesesOrdenados.length - 2];
@@ -611,7 +801,6 @@
             const dashData = {
                 totalReceita,
                 totalPedidos,
-                // 🔥 CORREÇÃO 2: TICKET MÉDIO SÓ COM FATURADOS
                 ticketMedio: totalPedidosFaturados > 0 ? totalReceita / totalPedidosFaturados : 0,
                 percentualEntregue: totalPedidos > 0 ? (totalEntregue / totalPedidos * 100) : 0,
                 clientes,
@@ -619,7 +808,7 @@
                 topProdutos
             };
             
-            console.log('✅ Dados processados:', dashData);
+            console.log('\n✅ Dados finais processados');
             renderDashboard(dashData);
         }
 
@@ -663,33 +852,97 @@
         }
 
         function renderClientsAnalysis(data) {
-            const container = document.getElementById('clients-rows');
+            const container = document.getElementById('clients-grid');
             container.innerHTML = '';
             
             ['GWM', 'RENAULT', 'TC'].forEach(cliente => {
                 if (!data.clientes[cliente]) return;
                 
                 const c = data.clientes[cliente];
-                const div = document.createElement('div');
-                div.className = 'client-row';
+                const info = contratoInfo[cliente];
+                const percentEntregue = c.pedidos > 0 ? ((c.entregue / c.pedidos) * 100).toFixed(0) : 0;
                 
-                let crescimentoHtml = '<div class="client-growth">--</div>';
-                if (c.crescimento !== null && c.crescimento !== undefined) {
-                    const sinal = c.crescimento >= 0 ? '+' : '';
-                    const classe = c.crescimento >= 0 ? 'positive' : 'negative';
-                    crescimentoHtml = `<div class="client-growth ${classe}">${sinal}${c.crescimento.toFixed(1)}%</div>`;
-                }
+                // Encontrar altura máxima para escalar barras
+                const maxValor = Math.max(c.pendente, c.faturado, c.transito, c.entregue, 1);
                 
-                div.innerHTML = `
-                    <div class="client-name">
-                        <span>${clientIcons[cliente]}</span>
-                        <span>${cliente}</span>
+                const card = document.createElement('div');
+                card.className = 'client-card';
+                card.innerHTML = `
+                    <div class="client-card-header">
+                        <div class="client-card-title">
+                            <span>${clientIcons[cliente]}</span>
+                            <span>${cliente}</span>
+                        </div>
+                        <div class="client-card-units">${c.unidades} unidades</div>
                     </div>
-                    <div class="client-revenue">R$ ${(c.receita / 1000).toFixed(0)}k</div>
-                    <div class="client-participation">${c.participacao.toFixed(1)}% do total</div>
-                    ${crescimentoHtml}
+                    
+                    <div class="client-card-info">
+                        <div><strong>${cliente}</strong> registrou <strong>${c.unidades} unidades</strong>, sendo <strong>${c.entregue} entregues</strong> e <strong>${c.transito} em trânsito</strong>.</div>
+                        <div>Principal produto: <strong>${c.principalProduto}</strong></div>
+                    </div>
+                    
+                    <div class="client-card-stats">
+                        <div class="client-stat">
+                            <div class="client-stat-label">Faturado</div>
+                            <div class="client-stat-value">${c.faturado}</div>
+                        </div>
+                        <div class="client-stat entregue">
+                            <div class="client-stat-label">Entregue</div>
+                            <div class="client-stat-value">${c.entregue}</div>
+                        </div>
+                        <div class="client-stat transito">
+                            <div class="client-stat-label">Trânsito</div>
+                            <div class="client-stat-value">${c.transito}</div>
+                        </div>
+                        <div class="client-stat">
+                            <div class="client-stat-label">% Entregue</div>
+                            <div class="client-stat-value">${percentEntregue}%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="client-card-info" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ecf0f1;">
+                        <div><strong>VIGÊNCIA:</strong> ${info.vigencia}</div>
+                        <div><strong>STATUS:</strong> ${info.status}</div>
+                    </div>
+                    
+                    <div class="client-card-chart">
+                        <div class="chart-bars">
+                            <div class="chart-bar-container">
+                                <div class="chart-bar-wrapper">
+                                    <div class="chart-bar pendente" style="height: ${(c.pendente / maxValor * 100)}px"></div>
+                                </div>
+                                <div class="chart-bar-label">Pendente</div>
+                                <div class="chart-bar-value">${c.pendente}</div>
+                            </div>
+                            <div class="chart-bar-container">
+                                <div class="chart-bar-wrapper">
+                                    <div class="chart-bar faturado" style="height: ${(c.faturado / maxValor * 100)}px"></div>
+                                </div>
+                                <div class="chart-bar-label">Faturado</div>
+                                <div class="chart-bar-value">${c.faturado}</div>
+                            </div>
+                            <div class="chart-bar-container">
+                                <div class="chart-bar-wrapper">
+                                    <div class="chart-bar transito" style="height: ${(c.transito / maxValor * 100)}px"></div>
+                                </div>
+                                <div class="chart-bar-label">Em Trânsito</div>
+                                <div class="chart-bar-value">${c.transito}</div>
+                            </div>
+                            <div class="chart-bar-container">
+                                <div class="chart-bar-wrapper">
+                                    <div class="chart-bar entregue" style="height: ${(c.entregue / maxValor * 100)}px"></div>
+                                </div>
+                                <div class="chart-bar-label">Entregue</div>
+                                <div class="chart-bar-value">${c.entregue}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="font-size: 0.8rem; color: #95a5a6; margin-top: 15px; font-style: italic;">
+                        ${info.observacao}
+                    </div>
                 `;
-                container.appendChild(div);
+                container.appendChild(card);
             });
         }
 
@@ -775,28 +1028,49 @@
             // Top Produtos
             const topContainer = document.getElementById('top-products');
             topContainer.innerHTML = '';
-            data.topProdutos.forEach((p, i) => {
-                const div = document.createElement('div');
-                div.className = 'product-item';
-                div.innerHTML = `
-                    <div class="product-name">${i + 1}. ${p.nome}</div>
-                    <div class="product-value">R$ ${(p.receita / 1000).toFixed(0)}k</div>
-                `;
-                topContainer.appendChild(div);
-            });
+            
+            if (data.topProdutos.length === 0) {
+                topContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #95a5a6;">Nenhum produto faturado ainda</div>';
+            } else {
+                data.topProdutos.forEach((p, i) => {
+                    const div = document.createElement('div');
+                    div.className = 'product-item';
+                    div.innerHTML = `
+                        <div class="product-name">${i + 1}. ${p.nome}</div>
+                        <div class="product-value">R$ ${(p.receita / 1000).toFixed(0)}k</div>
+                    `;
+                    topContainer.appendChild(div);
+                });
+            }
             
             // Estoque Crítico
             const stockContainer = document.getElementById('critical-stock');
             stockContainer.innerHTML = '';
-            estoqueData.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'product-item';
-                div.innerHTML = `
-                    <div class="product-name">${item.nome}</div>
-                    <div class="product-value" style="color: #e74c3c;">${Math.max(0, item.disponivel)} un</div>
-                `;
-                stockContainer.appendChild(div);
-            });
+            
+            if (estoqueData.length === 0) {
+                stockContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #27ae60;">✅ Todos os itens com estoque positivo</div>';
+            } else {
+                estoqueData.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'product-item';
+                    div.style.flexDirection = 'column';
+                    div.style.alignItems = 'flex-start';
+                    div.style.padding = '12px';
+                    
+                    const reservasHtml = item.reservas > 0 
+                        ? `<span style="background: #f39c12; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-left: 10px;">📋 ${item.reservas} reservadas</span>`
+                        : '';
+                    
+                    div.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                            <div class="product-name">${item.nome}</div>
+                            <div class="product-value" style="color: #e74c3c;">${item.disponivel} un</div>
+                        </div>
+                        ${item.reservas > 0 ? `<div style="margin-top: 5px; width: 100%;">${reservasHtml}</div>` : ''}
+                    `;
+                    stockContainer.appendChild(div);
+                });
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
