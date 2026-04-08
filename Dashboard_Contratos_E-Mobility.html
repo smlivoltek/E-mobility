@@ -423,7 +423,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Dashboard de Contratos - Mobility 2026</h1>
+            <h1>Contratos E-Mobility</h1>
             <p>Visão Executiva e Operacional</p>
         </div>
 
@@ -573,8 +573,15 @@
 
         async function loadData() {
             try {
+                console.log('🔄 Iniciando carregamento de dados...');
+                console.log('📡 URL Contratos:', CSV_URL);
+                console.log('📡 URL Estoque:', CSV_ESTOQUE_URL);
+                
                 // Buscar dados de contratos
                 const response = await fetch(CSV_URL);
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP contratos: ${response.status}`);
+                }
                 const csvText = await response.text();
                 const data = parseCSV(csvText);
                 
@@ -582,30 +589,77 @@
                 
                 // Buscar estoque
                 const responseEstoque = await fetch(CSV_ESTOQUE_URL);
-                const csvEstoque = await responseEstoque.text();
-                const dataEstoque = parseCSV(csvEstoque);
+                if (!responseEstoque.ok) {
+                    console.warn('⚠️ Erro ao carregar estoque:', responseEstoque.status);
+                    estoqueData = [];
+                } else {
+                    const csvEstoque = await responseEstoque.text();
+                    const dataEstoque = parseCSV(csvEstoque);
+                    console.log('✅ Estoque - Linhas carregadas:', dataEstoque.length);
+                    processEstoque(dataEstoque);
+                }
                 
-                console.log('✅ Estoque - Linhas carregadas:', dataEstoque.length);
-                
-                processEstoque(dataEstoque);
                 processData(data);
                 
             } catch (error) {
-                console.error('❌ Erro:', error);
+                console.error('❌ Erro ao carregar dados:', error);
+                console.log('⚠️ Carregando dados de exemplo...');
                 useSampleData();
             }
         }
 
         function useSampleData() {
+            console.log('⚠️ Usando dados de exemplo');
+            
             const sampleData = {
                 totalReceita: 450000,
                 totalPedidos: 10,
                 ticketMedio: 45000,
                 percentualEntregue: 30,
                 clientes: {
-                    'GWM': { receita: 250000, pedidos: 5, entregue: 1, transito: 1, pendente: 3, participacao: 55.6 },
-                    'RENAULT': { receita: 150000, pedidos: 3, entregue: 1, transito: 1, pendente: 1, participacao: 33.3 },
-                    'TC': { receita: 50000, pedidos: 2, entregue: 2, transito: 0, pendente: 0, participacao: 11.1 }
+                    'GWM': { 
+                        receita: 250000, 
+                        pedidos: 5, 
+                        unidades: 5,
+                        faturado: 5,
+                        entregue: 1, 
+                        transito: 1, 
+                        pendente: 3, 
+                        participacao: 55.6,
+                        principalProduto: 'CC 60kW MF',
+                        produtosPorQtd: {
+                            'CC 60kW MF': 3,
+                            'CC 120kW MF': 2
+                        }
+                    },
+                    'RENAULT': { 
+                        receita: 150000, 
+                        pedidos: 3,
+                        unidades: 3,
+                        faturado: 3,
+                        entregue: 1, 
+                        transito: 1, 
+                        pendente: 1, 
+                        participacao: 33.3,
+                        principalProduto: 'CC 30kW MC',
+                        produtosPorQtd: {
+                            'CC 30kW MC': 3
+                        }
+                    },
+                    'TC': { 
+                        receita: 50000, 
+                        pedidos: 2,
+                        unidades: 2,
+                        faturado: 2,
+                        entregue: 2, 
+                        transito: 0, 
+                        pendente: 0, 
+                        participacao: 11.1,
+                        principalProduto: 'CA 22kW ATOM',
+                        produtosPorQtd: {
+                            'CA 22kW ATOM': 2
+                        }
+                    }
                 },
                 evolucaoMensal: [
                     { mes: 'Jan', valor: 0 },
