@@ -227,6 +227,70 @@
             margin-top: 5px;
         }
 
+        .products-table {
+            margin-top: 15px;
+            border-top: 1px solid #ecf0f1;
+            padding-top: 15px;
+        }
+
+        .products-table-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-row-table {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.85rem;
+            align-items: center;
+        }
+
+        .product-row-table:first-of-type {
+            font-weight: 600;
+            color: #7f8c8d;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .product-row-table:last-of-type {
+            border-bottom: none;
+        }
+
+        .product-qty {
+            text-align: center;
+            font-weight: 600;
+            color: #3498db;
+        }
+
+        .product-meta {
+            text-align: center;
+            color: #7f8c8d;
+        }
+
+        .product-percent {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .product-percent.no-meta {
+            color: #95a5a6;
+            font-style: italic;
+        }
+
+        .product-percent.achieved {
+            color: #27ae60;
+        }
+
+        .product-percent.partial {
+            color: #f39c12;
+        }
+
         /* Gráficos */
         .charts-grid {
             display: grid;
@@ -425,17 +489,20 @@
             'GWM': {
                 vigencia: '09/02/2025 – Indeterminado',
                 status: 'Ativo',
-                observacao: 'Fornecimento sob demanda, sem obrigação mínima de volume'
+                observacao: 'Fornecimento sob demanda, sem obrigação mínima de volume',
+                metasProduto: {} // Sem meta de produto
             },
             'RENAULT': {
                 vigencia: '-- à --',
                 status: 'Ativo',
-                observacao: 'Sem volume mínimo obrigatório'
+                observacao: 'Sem volume mínimo obrigatório',
+                metasProduto: {} // Adicionar metas quando disponível
             },
             'TC': {
                 vigencia: '-- à --',
                 status: 'Ativo',
-                observacao: 'Sem volume mínimo obrigatório'
+                observacao: 'Sem volume mínimo obrigatório',
+                metasProduto: {} // Adicionar metas quando disponível
             }
         };
 
@@ -865,6 +932,45 @@
                 // Encontrar altura máxima para escalar barras
                 const maxValor = Math.max(c.pendente, c.faturado, c.transito, c.entregue, 1);
                 
+                // Criar tabela de produtos
+                let produtosHtml = '';
+                const produtosEntries = Object.entries(c.produtosPorQtd).sort((a, b) => b[1] - a[1]);
+                
+                if (produtosEntries.length > 0) {
+                    produtosHtml = `
+                        <div class="products-table">
+                            <div class="products-table-title">📊 Análise por Produto</div>
+                            <div class="product-row-table">
+                                <div>Produto</div>
+                                <div style="text-align: center;">Comprado</div>
+                                <div style="text-align: center;">Meta</div>
+                                <div style="text-align: center;">% Atingido</div>
+                            </div>
+                    `;
+                    
+                    produtosEntries.forEach(([produto, qtd]) => {
+                        const meta = info.metasProduto[produto] || 0;
+                        let percentHtml = '<span class="product-percent no-meta">Sem meta</span>';
+                        
+                        if (meta > 0) {
+                            const percent = ((qtd / meta) * 100).toFixed(0);
+                            const classe = percent >= 100 ? 'achieved' : 'partial';
+                            percentHtml = `<span class="product-percent ${classe}">${percent}%</span>`;
+                        }
+                        
+                        produtosHtml += `
+                            <div class="product-row-table">
+                                <div>${produto.substring(0, 30)}</div>
+                                <div class="product-qty">${qtd}</div>
+                                <div class="product-meta">${meta > 0 ? meta : '--'}</div>
+                                <div>${percentHtml}</div>
+                            </div>
+                        `;
+                    });
+                    
+                    produtosHtml += '</div>';
+                }
+                
                 const card = document.createElement('div');
                 card.className = 'client-card';
                 card.innerHTML = `
@@ -937,6 +1043,8 @@
                             </div>
                         </div>
                     </div>
+                    
+                    ${produtosHtml}
                     
                     <div style="font-size: 0.8rem; color: #95a5a6; margin-top: 15px; font-style: italic;">
                         ${info.observacao}
